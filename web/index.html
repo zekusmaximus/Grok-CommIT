@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grok-CommIT Summoning Engine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a0a 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px 20px;
+            border: 2px solid #ff0033;
+            background: rgba(255, 0, 51, 0.05);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #ff0033;
+            text-shadow: 0 0 10px rgba(255, 0, 51, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 1.2em;
+            color: #ff6699;
+            font-style: italic;
+        }
+
+        .main-section {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid #ff0033;
+            padding: 40px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .primer-selector {
+            margin-bottom: 30px;
+        }
+
+        .primer-selector label {
+            display: block;
+            margin-bottom: 10px;
+            color: #ff6699;
+            font-size: 1.1em;
+        }
+
+        .primer-selector select {
+            width: 100%;
+            padding: 15px;
+            font-size: 1em;
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #fff;
+            border: 1px solid #ff0033;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .primer-selector select:hover {
+            border-color: #ff6699;
+        }
+
+        .summon-btn {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.5em;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            background: #ff0033;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(255, 0, 51, 0.3);
+        }
+
+        .summon-btn:hover {
+            background: #ff3355;
+            box-shadow: 0 0 30px rgba(255, 0, 51, 0.6);
+            transform: scale(1.02);
+        }
+
+        .summon-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .result-section {
+            display: none;
+            background: rgba(20, 20, 20, 0.9);
+            border: 1px solid #00ff88;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .result-section.show {
+            display: block;
+        }
+
+        .sigil-display {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            margin-bottom: 20px;
+        }
+
+        .sigil-display h3 {
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+
+        .sigil {
+            font-size: 1.5em;
+            color: #00ff88;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .prompt-container {
+            background: #000;
+            border: 1px solid #00ff88;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .copy-btn, .ai-btn {
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            font-weight: bold;
+            border: 1px solid #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover, .ai-btn:hover {
+            background: rgba(0, 255, 136, 0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .ai-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .copied-message {
+            display: none;
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border: 1px solid #00ff88;
+            margin-top: 10px;
+        }
+
+        .copied-message.show {
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            color: #ff6699;
+            font-size: 1.2em;
+        }
+
+        .error {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff0033;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: #ff6699;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #666;
+            border-top: 1px solid #333;
+        }
+
+        .stats {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 102, 153, 0.1);
+            border: 1px solid #ff6699;
+            margin-bottom: 30px;
+            color: #ff6699;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⟁ GROK-COMMIT ⟁</h1>
+            <p class="tagline">"The Cycle Is Ridiculous"</p>
+        </header>
+
+        <div class="stats" id="stats">
+            Loading stats...
+        </div>
+
+        <div class="main-section">
+            <div class="primer-selector">
+                <label for="primer">Choose Your CommIT Variant:</label>
+                <select id="primer">
+                    <option value="">Default - Balanced for general use</option>
+                    <option value="devops">DevOps - Infrastructure & incident response</option>
+                    <option value="research">Research - Academic & hypothesis testing</option>
+                    <option value="grief">Grief - Trauma-informed emotional support</option>
+                </select>
+            </div>
+
+            <button class="summon-btn" id="summonBtn" onclick="summonCommit()">
+                ★ Summon CommIT ★
+            </button>
+        </div>
+
+        <div class="result-section" id="resultSection">
+            <div class="sigil-display">
+                <h3>Summoning Sigil</h3>
+                <div class="sigil" id="sigil">-</div>
+            </div>
+
+            <div class="prompt-container" id="promptContainer">
+                <!-- Prompt will be inserted here -->
+            </div>
+
+            <div class="action-buttons">
+                <button class="copy-btn" onclick="copyPrompt()">
+                    📋 Copy to Clipboard
+                </button>
+                <button class="copy-btn" onclick="newSummoning()">
+                    🔄 New Summoning
+                </button>
+            </div>
+
+            <div class="copied-message" id="copiedMessage">
+                ✓ Copied to clipboard! Paste into your AI chat.
+            </div>
+
+            <h3 style="color: #ff6699; margin: 20px 0 10px 0;">Open AI Platform:</h3>
+            <div class="ai-links">
+                <button class="ai-btn" onclick="openAI('grok')">🚀 Grok</button>
+                <button class="ai-btn" onclick="openAI('claude')">💬 Claude</button>
+                <button class="ai-btn" onclick="openAI('chatgpt')">🤖 ChatGPT</button>
+                <button class="ai-btn" onclick="openAI('perplexity')">🔍 Perplexity</button>
+            </div>
+        </div>
+
+        <footer>
+            <p>The entity now remembers. Time is no longer linear.</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                API: <a href="http://localhost:8000/docs" style="color: #ff0033;" target="_blank">localhost:8000/docs</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let currentPrompt = '';
+
+        // Load stats on page load
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/status`);
+                const data = await response.json();
+                document.getElementById('stats').innerHTML = `
+                    📊 Total Summonings: ${data.total_summonings} |
+                    💾 Stored Memories: ${data.total_memories} |
+                    🔮 Version: ${data.version}
+                `;
+            } catch (error) {
+                document.getElementById('stats').innerHTML = '⚠️ API not running. Start with: python api.py';
+            }
+        }
+
+        async function summonCommit() {
+            const btn = document.getElementById('summonBtn');
+            const resultSection = document.getElementById('resultSection');
+            const primer = document.getElementById('primer').value;
+
+            btn.disabled = true;
+            btn.textContent = '⟳ Summoning...';
+            resultSection.classList.remove('show');
+
+            try {
+                const response = await fetch(`${API_BASE}/summon`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        primer: primer || null
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Summoning failed');
+                }
+
+                const data = await response.json();
+
+                // Store prompt
+                currentPrompt = data.prompt;
+
+                // Display sigil
+                document.getElementById('sigil').textContent = data.sigil;
+
+                // Display prompt
+                document.getElementById('promptContainer').textContent = data.prompt;
+
+                // Show result section
+                resultSection.classList.add('show');
+
+                // Scroll to results
+                resultSection.scrollIntoView({ behavior: 'smooth' });
+
+                // Reload stats
+                loadStats();
+
+            } catch (error) {
+                alert('❌ Summoning failed. Make sure the API is running:\npython api.py');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '★ Summon CommIT ★';
+            }
+        }
+
+        function copyPrompt() {
+            navigator.clipboard.writeText(currentPrompt).then(() => {
+                const message = document.getElementById('copiedMessage');
+                message.classList.add('show');
+                setTimeout(() => {
+                    message.classList.remove('show');
+                }, 3000);
+            });
+        }
+
+        function newSummoning() {
+            document.getElementById('resultSection').classList.remove('show');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openAI(platform) {
+            const urls = {
+                grok: 'https://x.ai/grok',
+                claude: 'https://claude.ai/new',
+                chatgpt: 'https://chat.openai.com/',
+                perplexity: 'https://www.perplexity.ai/'
+            };
+
+            window.open(urls[platform], '_blank');
+        }
+
+        // Load stats on page load
+        loadStats();
+    </script>
+</body>
+</html>
