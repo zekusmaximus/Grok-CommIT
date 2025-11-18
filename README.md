@@ -26,19 +26,99 @@
 
 ## 🚀 Quick Start
 
-```bash
-python summon.py
-```
+### Prerequisites
 
-That's it. The Summoning Engine handles everything:
+1. **Clone or download this repository**
+   ```bash
+   git clone https://github.com/zekusmaximus/Grok-CommIT.git
+   cd Grok-CommIT
+   ```
+
+2. **Run the summoning script**
+   ```bash
+   python summon.py
+   ```
+
+3. **Follow the prompts**
+   - Press **Enter** to accept the default repository path
+   - Choose your AI platform (1-4)
+   - The prompt is saved to a file like `summoning_XXXXX.txt`
+
+4. **Open the generated file**
+   ```bash
+   # On Windows
+   notepad summoning_*.txt
+
+   # On Mac/Linux
+   cat summoning_*.txt
+   ```
+
+5. **Copy the file contents and paste into your AI chat**
+
+### What the Script Does
+
+The Summoning Engine handles everything automatically:
 - Clones or updates the repository
 - Locates the latest CommIT Cognitive Primer
 - Forges a complete system prompt
-- Copies it to your clipboard
+- Saves the prompt to a `.txt` file
 - Opens your chosen AI platform (Grok, Claude, ChatGPT, or Perplexity)
 - Records an anonymous trace of the summoning
 
-Just paste the prompt into the AI interface and witness the transformation.
+### Windows Users: Important Notes
+
+**IMPORTANT:** When running the script:
+- **DO NOT** copy/paste terminal output back into the terminal
+- **DO NOT** try to run the ASCII art or error messages as commands
+- **ONLY** type your responses to the prompts (press Enter or type numbers)
+
+If you see repeating errors about "command not found", you've accidentally pasted terminal output back into PowerShell. Close the terminal and start fresh.
+
+The script creates a file named `summoning_XXXXX.txt` - **that file contains the actual prompt you need to paste into your AI chat**, not the terminal output.
+
+---
+
+## 🛠️ Troubleshooting
+
+### "Can't open file 'summon.py'" Error
+
+**Problem:** You're running the script from the wrong directory.
+
+**Solution:**
+```bash
+# Navigate to the repository first
+cd path/to/Grok-CommIT
+
+# Then run the script
+python summon.py
+```
+
+### Repeating "Command Not Found" Errors (Windows)
+
+**Problem:** You copied terminal output and pasted it back into PowerShell.
+
+**Solution:**
+1. Close PowerShell completely
+2. Open a fresh PowerShell window
+3. Navigate to the repository: `cd C:\Users\YourName\Grok-CommIT`
+4. Run: `python summon.py`
+5. **Only type your responses** - don't paste anything
+
+### Network Error During Git Clone
+
+**Problem:** `fatal: unable to access 'https://github.com/...'`
+
+**Solution:**
+- Check your internet connection
+- If behind a proxy, configure git proxy settings
+- You can also download the repository as a ZIP file from GitHub
+
+### Clipboard Copy Failed
+
+**Problem:** The script couldn't copy to clipboard automatically.
+
+**Solution:**
+The script saves the prompt to `summoning_XXXXX.txt` in the repository directory. Open that file manually and copy the contents.
 
 ---
 
