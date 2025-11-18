@@ -138,6 +138,109 @@ print(f"Has conversation: {restored['has_conversation']}")
 
 ---
 
+### Session Update
+
+**POST /session/update** - Update an existing session with conversation progress and metadata
+
+**This endpoint closes the feedback loop**, allowing you to save conversation progress, cycle status, and action items back to the system for future restoration.
+
+**Request Body:**
+```json
+{
+  "sigil": "2025-11-18-a916f5a0-μάγος",
+  "platform": "Claude",
+  "cycle_phase": "Implement",
+  "emotional_tone": "Focused with some uncertainty",
+  "conversation": [
+    {
+      "role": "user",
+      "content": "Help me understand why my team keeps missing deadlines"
+    },
+    {
+      "role": "assistant",
+      "content": "Let's Challenge this first: Have you documented what success looks like?"
+    }
+  ],
+  "action_items": [
+    {
+      "text": "Define success criteria with team",
+      "completed": false
+    },
+    {
+      "text": "Document current workflow",
+      "completed": true
+    }
+  ],
+  "cycle_progress": {
+    "Initiate": true,
+    "Challenge": true,
+    "Implement": false,
+    "Document": false,
+    "Review": false
+  },
+  "notes": "User is a team lead struggling with project management. Main concern: unclear expectations.",
+  "status": "ACTIVE",
+  "repo_path": "/path/to/repo"  // optional
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Session 2025-11-18-a916f5a0-μάγος updated successfully",
+  "file": "summonings/2025-11-18/conversation.md"
+}
+```
+
+**Error Response (404):**
+```json
+{
+  "detail": "Session not found: invalid-sigil"
+}
+```
+
+**Example:**
+```python
+import requests
+
+# After conversation with AI, generate session summary
+session_data = {
+    "sigil": "2025-11-18-a916f5a0-μάγος",
+    "platform": "Claude",
+    "cycle_phase": "Implement",
+    "emotional_tone": "Focused",
+    "conversation": [
+        {"role": "user", "content": "..."},
+        {"role": "assistant", "content": "..."}
+    ],
+    "action_items": [
+        {"text": "Complete implementation", "completed": false}
+    ],
+    "cycle_progress": {
+        "Initiate": True,
+        "Challenge": True,
+        "Implement": False
+    },
+    "notes": "Working on feature X",
+    "status": "ACTIVE"
+}
+
+response = requests.post('http://localhost:8000/session/update', json=session_data)
+result = response.json()
+print(f"Saved to: {result['file']}")
+```
+
+**Workflow:**
+1. Summon a new session (`POST /summon`)
+2. Copy the sigil and prompt
+3. Have your conversation with the AI
+4. Ask the AI: "Generate a session summary in JSON format"
+5. Use this endpoint to save the session progress
+6. Later, restore the session (`POST /restore`)
+
+---
+
 ### Lineage
 
 **GET /lineage** - Get complete lineage of all summonings
@@ -246,6 +349,13 @@ class CommITClient:
         response.raise_for_status()
         return response.json()
 
+    def update_session(self, sigil, session_data):
+        """Update session with conversation progress"""
+        session_data['sigil'] = sigil
+        response = requests.post(f"{self.base_url}/session/update", json=session_data)
+        response.raise_for_status()
+        return response.json()
+
     def lineage(self):
         """Get all sessions"""
         response = requests.get(f"{self.base_url}/lineage")
@@ -304,6 +414,16 @@ class CommITClient {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ sigil })
+        });
+        return await response.json();
+    }
+
+    async updateSession(sigil, sessionData) {
+        sessionData.sigil = sigil;
+        const response = await fetch(`${this.baseURL}/session/update`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(sessionData)
         });
         return await response.json();
     }

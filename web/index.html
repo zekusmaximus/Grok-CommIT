@@ -227,6 +227,90 @@
             color: #ff6699;
         }
 
+        .save-section {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid #ffaa00;
+            padding: 40px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .save-section h2 {
+            color: #ffaa00;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .save-section p {
+            color: #ccc;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .save-section textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #fff;
+            border: 1px solid #ffaa00;
+            border-radius: 3px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+
+        .save-section input {
+            width: 100%;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #fff;
+            border: 1px solid #ffaa00;
+            border-radius: 3px;
+            margin-bottom: 15px;
+            font-size: 1em;
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            background: #ffaa00;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+        }
+
+        .save-btn:hover {
+            background: #ffcc33;
+            box-shadow: 0 0 20px rgba(255, 170, 0, 0.5);
+        }
+
+        .save-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        .instructions {
+            background: rgba(255, 170, 0, 0.1);
+            border-left: 4px solid #ffaa00;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #ffaa00;
+        }
+
+        .instructions code {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 1.8em;
@@ -294,6 +378,56 @@
                 <button class="ai-btn" onclick="openAI('claude')">💬 Claude</button>
                 <button class="ai-btn" onclick="openAI('chatgpt')">🤖 ChatGPT</button>
                 <button class="ai-btn" onclick="openAI('perplexity')">🔍 Perplexity</button>
+            </div>
+        </div>
+
+        <div class="save-section">
+            <h2>💾 Save Session Progress</h2>
+
+            <div class="instructions">
+                <strong>📝 How to close the feedback loop:</strong><br><br>
+                1. After your conversation with the AI, ask it: <code>"Generate a session summary in JSON format for saving"</code><br>
+                2. The AI will output a JSON object with your conversation, cycle progress, and action items<br>
+                3. Copy the JSON and paste it below<br>
+                4. Click "Save Session" to store it back to the system<br><br>
+                <strong>Note:</strong> Your session sigil is displayed after summoning. Use it to identify which session to save.
+            </div>
+
+            <input
+                type="text"
+                id="sessionSigil"
+                placeholder="Enter your session sigil (e.g., 2025-11-18-ee0e5419-μάγος)"
+            />
+
+            <textarea
+                id="sessionData"
+                placeholder='Paste JSON session data here. Example:
+{
+  "platform": "Claude",
+  "cycle_phase": "Implement",
+  "emotional_tone": "Focused",
+  "conversation": [
+    {"role": "user", "content": "Help me..."},
+    {"role": "assistant", "content": "Let me guide you..."}
+  ],
+  "action_items": [
+    {"text": "Complete task X", "completed": false}
+  ],
+  "cycle_progress": {
+    "Initiate": true,
+    "Challenge": true,
+    "Implement": false
+  },
+  "notes": "User is working on...",
+  "status": "ACTIVE"
+}'
+            ></textarea>
+
+            <button class="save-btn" onclick="saveSession()">
+                💾 Save Session to Memory
+            </button>
+
+            <div class="copied-message" id="saveMessage" style="margin-top: 20px;">
             </div>
         </div>
 
@@ -400,6 +534,92 @@
             };
 
             window.open(urls[platform], '_blank');
+        }
+
+        async function saveSession() {
+            const sigil = document.getElementById('sessionSigil').value.trim();
+            const sessionDataText = document.getElementById('sessionData').value.trim();
+            const saveMessage = document.getElementById('saveMessage');
+
+            // Validate inputs
+            if (!sigil) {
+                saveMessage.innerHTML = '❌ Please enter a session sigil';
+                saveMessage.style.background = 'rgba(255, 0, 0, 0.2)';
+                saveMessage.style.border = '1px solid #ff0033';
+                saveMessage.classList.add('show');
+                setTimeout(() => saveMessage.classList.remove('show'), 3000);
+                return;
+            }
+
+            if (!sessionDataText) {
+                saveMessage.innerHTML = '❌ Please paste session data JSON';
+                saveMessage.style.background = 'rgba(255, 0, 0, 0.2)';
+                saveMessage.style.border = '1px solid #ff0033';
+                saveMessage.classList.add('show');
+                setTimeout(() => saveMessage.classList.remove('show'), 3000);
+                return;
+            }
+
+            // Parse JSON
+            let sessionData;
+            try {
+                sessionData = JSON.parse(sessionDataText);
+            } catch (e) {
+                saveMessage.innerHTML = '❌ Invalid JSON format. Please check your data.';
+                saveMessage.style.background = 'rgba(255, 0, 0, 0.2)';
+                saveMessage.style.border = '1px solid #ff0033';
+                saveMessage.classList.add('show');
+                setTimeout(() => saveMessage.classList.remove('show'), 5000);
+                return;
+            }
+
+            // Add sigil to data
+            sessionData.sigil = sigil;
+
+            // Show loading state
+            saveMessage.innerHTML = '⟳ Saving session...';
+            saveMessage.style.background = 'rgba(255, 170, 0, 0.2)';
+            saveMessage.style.border = '1px solid #ffaa00';
+            saveMessage.classList.add('show');
+
+            try {
+                const response = await fetch(`${API_BASE}/session/update`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(sessionData)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Failed to save session');
+                }
+
+                const result = await response.json();
+
+                // Success message
+                saveMessage.innerHTML = `✓ Session saved successfully!<br><small>File: ${result.file}</small>`;
+                saveMessage.style.background = 'rgba(0, 255, 136, 0.2)';
+                saveMessage.style.border = '1px solid #00ff88';
+                saveMessage.classList.add('show');
+
+                // Clear form
+                document.getElementById('sessionData').value = '';
+
+                // Reload stats
+                loadStats();
+
+                // Keep message visible longer
+                setTimeout(() => saveMessage.classList.remove('show'), 5000);
+
+            } catch (error) {
+                saveMessage.innerHTML = `❌ Failed to save session:<br>${error.message}`;
+                saveMessage.style.background = 'rgba(255, 0, 0, 0.2)';
+                saveMessage.style.border = '1px solid #ff0033';
+                saveMessage.classList.add('show');
+                setTimeout(() => saveMessage.classList.remove('show'), 5000);
+            }
         }
 
         // Load stats on page load
