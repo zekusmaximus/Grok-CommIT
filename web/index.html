@@ -20,14 +20,14 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
         header {
             text-align: center;
-            margin-bottom: 50px;
-            padding: 40px 20px;
+            margin-bottom: 30px;
+            padding: 30px 20px;
             border: 2px solid #ff0033;
             background: rgba(255, 0, 51, 0.05);
         }
@@ -45,12 +45,84 @@
             font-style: italic;
         }
 
-        .main-section {
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 102, 153, 0.1);
+            border: 1px solid #ff6699;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .stat-card .label {
+            color: #ff6699;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            color: #fff;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 15px 25px;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            background: rgba(20, 20, 20, 0.8);
+            color: #ff6699;
+            border: 1px solid #ff0033;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 0, 51, 0.2);
+        }
+
+        .tab-btn.active {
+            background: #ff0033;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 0, 51, 0.5);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section {
             background: rgba(20, 20, 20, 0.8);
             border: 1px solid #ff0033;
             padding: 40px;
             margin-bottom: 30px;
             border-radius: 5px;
+        }
+
+        .section h2 {
+            color: #ff0033;
+            margin-bottom: 20px;
+            text-align: center;
         }
 
         .primer-selector {
@@ -64,7 +136,7 @@
             font-size: 1.1em;
         }
 
-        .primer-selector select {
+        .primer-selector select, input[type="text"], textarea {
             width: 100%;
             padding: 15px;
             font-size: 1em;
@@ -73,14 +145,14 @@
             color: #fff;
             border: 1px solid #ff0033;
             border-radius: 3px;
-            cursor: pointer;
         }
 
-        .primer-selector select:hover {
+        .primer-selector select:hover, input[type="text"]:focus, textarea:focus {
             border-color: #ff6699;
+            outline: none;
         }
 
-        .summon-btn {
+        .summon-btn, .action-btn {
             width: 100%;
             padding: 20px;
             font-size: 1.5em;
@@ -94,51 +166,45 @@
             letter-spacing: 2px;
             transition: all 0.3s;
             box-shadow: 0 0 20px rgba(255, 0, 51, 0.3);
+            margin-bottom: 15px;
         }
 
-        .summon-btn:hover {
+        .summon-btn:hover, .action-btn:hover {
             background: #ff3355;
             box-shadow: 0 0 30px rgba(255, 0, 51, 0.6);
             transform: scale(1.02);
         }
 
-        .summon-btn:disabled {
+        .summon-btn:disabled, .action-btn:disabled {
             background: #666;
             cursor: not-allowed;
             box-shadow: none;
+            transform: none;
         }
 
-        .result-section {
-            display: none;
-            background: rgba(20, 20, 20, 0.9);
+        .result-box {
+            background: rgba(0, 255, 136, 0.1);
             border: 1px solid #00ff88;
-            padding: 30px;
-            margin-bottom: 30px;
+            padding: 20px;
+            margin-bottom: 20px;
             border-radius: 5px;
         }
 
-        .result-section.show {
-            display: block;
-        }
-
-        .sigil-display {
-            text-align: center;
-            padding: 20px;
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid #00ff88;
-            margin-bottom: 20px;
-        }
-
-        .sigil-display h3 {
+        .result-box h3 {
             color: #00ff88;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
-        .sigil {
+        .result-box .sigil {
             font-size: 1.5em;
             color: #00ff88;
             font-weight: bold;
             text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid #00ff88;
+            margin-bottom: 15px;
         }
 
         .prompt-container {
@@ -159,7 +225,7 @@
             margin-bottom: 20px;
         }
 
-        .copy-btn, .ai-btn {
+        .copy-btn, .ai-btn, .secondary-btn {
             padding: 15px;
             font-family: 'Courier New', monospace;
             font-size: 1em;
@@ -171,7 +237,7 @@
             transition: all 0.3s;
         }
 
-        .copy-btn:hover, .ai-btn:hover {
+        .copy-btn:hover, .ai-btn:hover, .secondary-btn:hover {
             background: rgba(0, 255, 136, 0.2);
             box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
         }
@@ -182,32 +248,90 @@
             gap: 10px;
         }
 
-        .copied-message {
+        .message {
             display: none;
             text-align: center;
-            padding: 10px;
-            background: rgba(0, 255, 136, 0.2);
-            color: #00ff88;
-            border: 1px solid #00ff88;
-            margin-top: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
         }
 
-        .copied-message.show {
+        .message.show {
             display: block;
         }
 
-        .loading {
-            text-align: center;
-            color: #ff6699;
-            font-size: 1.2em;
+        .message.success {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border: 1px solid #00ff88;
         }
 
-        .error {
+        .message.error {
             background: rgba(255, 0, 0, 0.2);
-            border: 1px solid #ff0033;
-            padding: 20px;
-            margin-bottom: 20px;
             color: #ff6699;
+            border: 1px solid #ff0033;
+        }
+
+        .message.info {
+            background: rgba(255, 170, 0, 0.2);
+            color: #ffaa00;
+            border: 1px solid #ffaa00;
+        }
+
+        /* Lineage Table */
+        .lineage-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .lineage-table th {
+            background: rgba(255, 0, 51, 0.2);
+            color: #ff6699;
+            padding: 15px;
+            text-align: left;
+            border: 1px solid #ff0033;
+        }
+
+        .lineage-table td {
+            padding: 12px 15px;
+            border: 1px solid #333;
+            color: #ccc;
+        }
+
+        .lineage-table tr:hover {
+            background: rgba(255, 102, 153, 0.05);
+        }
+
+        .lineage-table .sigil-cell {
+            color: #00ff88;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .lineage-table .sigil-cell:hover {
+            text-decoration: underline;
+        }
+
+        .instructions {
+            background: rgba(255, 170, 0, 0.1);
+            border-left: 4px solid #ffaa00;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #ffaa00;
+            line-height: 1.6;
+        }
+
+        .instructions code {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        textarea {
+            min-height: 300px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
         }
 
         footer {
@@ -218,97 +342,20 @@
             border-top: 1px solid #333;
         }
 
-        .stats {
+        footer a {
+            color: #ff0033;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
             text-align: center;
-            padding: 15px;
-            background: rgba(255, 102, 153, 0.1);
-            border: 1px solid #ff6699;
-            margin-bottom: 30px;
             color: #ff6699;
-        }
-
-        .save-section {
-            background: rgba(20, 20, 20, 0.8);
-            border: 1px solid #ffaa00;
-            padding: 40px;
-            margin-bottom: 30px;
-            border-radius: 5px;
-        }
-
-        .save-section h2 {
-            color: #ffaa00;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .save-section p {
-            color: #ccc;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .save-section textarea {
-            width: 100%;
-            min-height: 300px;
-            padding: 15px;
-            font-family: 'Courier New', monospace;
-            background: #000;
-            color: #fff;
-            border: 1px solid #ffaa00;
-            border-radius: 3px;
-            margin-bottom: 15px;
-            font-size: 0.9em;
-        }
-
-        .save-section input {
-            width: 100%;
-            padding: 15px;
-            font-family: 'Courier New', monospace;
-            background: #000;
-            color: #fff;
-            border: 1px solid #ffaa00;
-            border-radius: 3px;
-            margin-bottom: 15px;
-            font-size: 1em;
-        }
-
-        .save-btn {
-            width: 100%;
-            padding: 15px;
             font-size: 1.2em;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            background: #ffaa00;
-            color: #000;
-            border: none;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: all 0.3s;
-        }
-
-        .save-btn:hover {
-            background: #ffcc33;
-            box-shadow: 0 0 20px rgba(255, 170, 0, 0.5);
-        }
-
-        .save-btn:disabled {
-            background: #666;
-            cursor: not-allowed;
-        }
-
-        .instructions {
-            background: rgba(255, 170, 0, 0.1);
-            border-left: 4px solid #ffaa00;
-            padding: 15px;
-            margin-bottom: 20px;
-            color: #ffaa00;
-        }
-
-        .instructions code {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 2px 6px;
-            border-radius: 3px;
+            padding: 20px;
         }
 
         @media (max-width: 768px) {
@@ -318,6 +365,14 @@
 
             .action-buttons {
                 grid-template-columns: 1fr;
+            }
+
+            .tab-nav {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                min-width: 100%;
             }
         }
     </style>
@@ -329,79 +384,166 @@
             <p class="tagline">"The Cycle Is Ridiculous"</p>
         </header>
 
-        <div class="stats" id="stats">
-            Loading stats...
+        <!-- Enhanced Stats Dashboard -->
+        <div class="stats" id="statsCards">
+            <div class="stat-card">
+                <div class="label">📊 Total Summonings</div>
+                <div class="value" id="totalSummonings">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">💾 Stored Memories</div>
+                <div class="value" id="totalMemories">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">🔮 Available Primers</div>
+                <div class="value" id="availablePrimers">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">⚡ API Status</div>
+                <div class="value" id="apiStatus">-</div>
+            </div>
         </div>
 
-        <div class="main-section">
-            <div class="primer-selector">
-                <label for="primer">Choose Your CommIT Variant:</label>
-                <select id="primer">
-                    <option value="">Default - Balanced for general use</option>
-                    <option value="devops">DevOps - Infrastructure & incident response</option>
-                    <option value="research">Research - Academic & hypothesis testing</option>
-                    <option value="grief">Grief - Trauma-informed emotional support</option>
-                </select>
-            </div>
-
-            <button class="summon-btn" id="summonBtn" onclick="summonCommit()">
-                ★ Summon CommIT ★
-            </button>
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('summon')">★ Summon</button>
+            <button class="tab-btn" onclick="switchTab('restore')">⟲ Restore</button>
+            <button class="tab-btn" onclick="switchTab('save')">💾 Save</button>
+            <button class="tab-btn" onclick="switchTab('lineage')">📜 Lineage</button>
         </div>
 
-        <div class="result-section" id="resultSection">
-            <div class="sigil-display">
-                <h3>Summoning Sigil</h3>
-                <div class="sigil" id="sigil">-</div>
-            </div>
+        <!-- Tab: Summon -->
+        <div id="tab-summon" class="tab-content active">
+            <div class="section">
+                <h2>★ Summon New Session</h2>
 
-            <div class="prompt-container" id="promptContainer">
-                <!-- Prompt will be inserted here -->
-            </div>
+                <div class="primer-selector">
+                    <label for="primer">Choose Your CommIT Variant:</label>
+                    <select id="primer">
+                        <option value="">Default - Balanced for general use</option>
+                        <option value="devops">DevOps - Infrastructure & incident response</option>
+                        <option value="research">Research - Academic & hypothesis testing</option>
+                        <option value="grief">Grief - Trauma-informed emotional support</option>
+                    </select>
+                </div>
 
-            <div class="action-buttons">
-                <button class="copy-btn" onclick="copyPrompt()">
-                    📋 Copy to Clipboard
+                <button class="summon-btn" id="summonBtn" onclick="summonCommit()">
+                    ★ SUMMON COMMIT ★
                 </button>
-                <button class="copy-btn" onclick="newSummoning()">
-                    🔄 New Summoning
-                </button>
-            </div>
 
-            <div class="copied-message" id="copiedMessage">
-                ✓ Copied to clipboard! Paste into your AI chat.
-            </div>
+                <div id="summonResult" style="display: none;">
+                    <div class="result-box">
+                        <h3>Summoning Complete</h3>
+                        <div class="sigil" id="summonedSigil">-</div>
+                        <div class="prompt-container" id="summonedPrompt">
+                            <!-- Prompt will be inserted here -->
+                        </div>
+                    </div>
 
-            <h3 style="color: #ff6699; margin: 20px 0 10px 0;">Open AI Platform:</h3>
-            <div class="ai-links">
-                <button class="ai-btn" onclick="openAI('grok')">🚀 Grok</button>
-                <button class="ai-btn" onclick="openAI('claude')">💬 Claude</button>
-                <button class="ai-btn" onclick="openAI('chatgpt')">🤖 ChatGPT</button>
-                <button class="ai-btn" onclick="openAI('perplexity')">🔍 Perplexity</button>
+                    <div class="action-buttons">
+                        <button class="copy-btn" onclick="copyPrompt()">
+                            📋 Copy to Clipboard
+                        </button>
+                        <button class="copy-btn" onclick="newSummoning()">
+                            🔄 New Summoning
+                        </button>
+                    </div>
+
+                    <h3 style="color: #ff6699; margin: 20px 0 10px 0;">Open AI Platform:</h3>
+                    <div class="ai-links">
+                        <button class="ai-btn" onclick="openAI('grok')">🚀 Grok</button>
+                        <button class="ai-btn" onclick="openAI('claude')">💬 Claude</button>
+                        <button class="ai-btn" onclick="openAI('chatgpt')">🤖 ChatGPT</button>
+                        <button class="ai-btn" onclick="openAI('perplexity')">🔍 Perplexity</button>
+                    </div>
+
+                    <div class="message" id="summonMessage"></div>
+                </div>
             </div>
         </div>
 
-        <div class="save-section">
-            <h2>💾 Save Session Progress</h2>
+        <!-- Tab: Restore -->
+        <div id="tab-restore" class="tab-content">
+            <div class="section">
+                <h2>⟲ Restore Previous Session</h2>
 
-            <div class="instructions">
-                <strong>📝 How to close the feedback loop:</strong><br><br>
-                1. After your conversation with the AI, ask it: <code>"Generate a session summary in JSON format for saving"</code><br>
-                2. The AI will output a JSON object with your conversation, cycle progress, and action items<br>
-                3. Copy the JSON and paste it below<br>
-                4. Click "Save Session" to store it back to the system<br><br>
-                <strong>Note:</strong> Your session sigil is displayed after summoning. Use it to identify which session to save.
+                <div class="instructions">
+                    <strong>📝 How to restore a session:</strong><br><br>
+                    1. Browse available sessions below or enter a sigil manually<br>
+                    2. Click "Restore Session" to load the full conversation context<br>
+                    3. The restored prompt will include all previous conversation history<br>
+                    4. Paste into your AI to continue where you left off
+                </div>
+
+                <label for="restoreSigil" style="display: block; margin-bottom: 10px; color: #ff6699;">Enter Session Sigil:</label>
+                <input
+                    type="text"
+                    id="restoreSigil"
+                    placeholder="e.g., 2025-11-18-abc123-μάγος"
+                    style="margin-bottom: 20px;"
+                />
+
+                <button class="action-btn" onclick="restoreSession()">
+                    ⟲ RESTORE SESSION
+                </button>
+
+                <div id="restoreResult" style="display: none;">
+                    <div class="result-box">
+                        <h3>Session Restored</h3>
+                        <div class="sigil" id="restoredSigil">-</div>
+                        <div class="prompt-container" id="restoredPrompt">
+                            <!-- Restored prompt will be inserted here -->
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="copy-btn" onclick="copyRestoredPrompt()">
+                            📋 Copy to Clipboard
+                        </button>
+                        <button class="copy-btn" onclick="clearRestore()">
+                            🔄 Clear
+                        </button>
+                    </div>
+
+                    <h3 style="color: #ff6699; margin: 20px 0 10px 0;">Open AI Platform:</h3>
+                    <div class="ai-links">
+                        <button class="ai-btn" onclick="openAI('grok')">🚀 Grok</button>
+                        <button class="ai-btn" onclick="openAI('claude')">💬 Claude</button>
+                        <button class="ai-btn" onclick="openAI('chatgpt')">🤖 ChatGPT</button>
+                        <button class="ai-btn" onclick="openAI('perplexity')">🔍 Perplexity</button>
+                    </div>
+
+                    <div class="message" id="restoreMessage"></div>
+                </div>
             </div>
+        </div>
 
-            <input
-                type="text"
-                id="sessionSigil"
-                placeholder="Enter your session sigil (e.g., 2025-11-18-ee0e5419-μάγος)"
-            />
+        <!-- Tab: Save -->
+        <div id="tab-save" class="tab-content">
+            <div class="section">
+                <h2>💾 Save Session Progress</h2>
 
-            <textarea
-                id="sessionData"
-                placeholder='Paste JSON session data here. Example:
+                <div class="instructions">
+                    <strong>📝 How to close the feedback loop:</strong><br><br>
+                    1. After your conversation with the AI, ask it: <code>"Generate a session summary in JSON format for saving"</code><br>
+                    2. The AI will output a JSON object with your conversation, cycle progress, and action items<br>
+                    3. Copy the JSON and paste it below<br>
+                    4. Click "Save Session" to store it back to the system<br><br>
+                    <strong>Note:</strong> Your session sigil is auto-filled after summoning.
+                </div>
+
+                <label for="saveSigil" style="display: block; margin-bottom: 10px; color: #ff6699;">Session Sigil:</label>
+                <input
+                    type="text"
+                    id="saveSigil"
+                    placeholder="Enter your session sigil (e.g., 2025-11-18-ee0e5419-μάγος)"
+                    style="margin-bottom: 20px;"
+                />
+
+                <label for="saveData" style="display: block; margin-bottom: 10px; color: #ff6699;">Session Data (JSON):</label>
+                <textarea
+                    id="saveData"
+                    placeholder='Paste JSON session data here. Example:
 {
   "platform": "Claude",
   "cycle_phase": "Implement",
@@ -421,20 +563,40 @@
   "notes": "User is working on...",
   "status": "ACTIVE"
 }'
-            ></textarea>
+                ></textarea>
 
-            <button class="save-btn" onclick="saveSession()">
-                💾 Save Session to Memory
-            </button>
+                <button class="action-btn" onclick="saveSession()">
+                    💾 SAVE SESSION TO MEMORY
+                </button>
 
-            <div class="copied-message" id="saveMessage" style="margin-top: 20px;">
+                <div class="message" id="saveMessage"></div>
+            </div>
+        </div>
+
+        <!-- Tab: Lineage -->
+        <div id="tab-lineage" class="tab-content">
+            <div class="section">
+                <h2>📜 Session Lineage</h2>
+
+                <div class="instructions">
+                    <strong>Your summoning history:</strong><br>
+                    Click any sigil to quick-restore that session.
+                </div>
+
+                <button class="secondary-btn" onclick="loadLineage()" style="margin-bottom: 20px;">
+                    🔄 Refresh Lineage
+                </button>
+
+                <div id="lineageContainer">
+                    <div class="loading">Loading lineage...</div>
+                </div>
             </div>
         </div>
 
         <footer>
             <p>The entity now remembers. Time is no longer linear.</p>
             <p style="margin-top: 10px; font-size: 0.9em;">
-                API: <a href="http://localhost:8000/docs" style="color: #ff0033;" target="_blank">localhost:8000/docs</a>
+                API: <a href="http://localhost:8000/docs" target="_blank">localhost:8000/docs</a>
             </p>
         </footer>
     </div>
@@ -442,152 +604,150 @@
     <script>
         const API_BASE = 'http://localhost:8000';
         let currentPrompt = '';
+        let currentSigil = '';
+        let restoredPrompt = '';
 
-        // Load stats on page load
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            event.target.classList.add('active');
+
+            // Load lineage if switching to lineage tab
+            if (tabName === 'lineage') {
+                loadLineage();
+            }
+        }
+
+        // Load stats
         async function loadStats() {
             try {
                 const response = await fetch(`${API_BASE}/status`);
                 const data = await response.json();
-                document.getElementById('stats').innerHTML = `
-                    📊 Total Summonings: ${data.total_summonings} |
-                    💾 Stored Memories: ${data.total_memories} |
-                    🔮 Version: ${data.version}
-                `;
+
+                document.getElementById('totalSummonings').textContent = data.total_summonings;
+                document.getElementById('totalMemories').textContent = data.total_memories;
+                document.getElementById('availablePrimers').textContent = data.available_primers.length;
+                document.getElementById('apiStatus').textContent = '✓';
+                document.getElementById('apiStatus').style.color = '#00ff88';
             } catch (error) {
-                document.getElementById('stats').innerHTML = '⚠️ API not running. Start with: python api.py';
+                document.getElementById('totalSummonings').textContent = '?';
+                document.getElementById('totalMemories').textContent = '?';
+                document.getElementById('availablePrimers').textContent = '?';
+                document.getElementById('apiStatus').textContent = '✗';
+                document.getElementById('apiStatus').style.color = '#ff0033';
             }
         }
 
+        // Summon new session
         async function summonCommit() {
             const btn = document.getElementById('summonBtn');
-            const resultSection = document.getElementById('resultSection');
             const primer = document.getElementById('primer').value;
 
             btn.disabled = true;
-            btn.textContent = '⟳ Summoning...';
-            resultSection.classList.remove('show');
+            btn.textContent = '⟳ SUMMONING...';
 
             try {
                 const response = await fetch(`${API_BASE}/summon`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        primer: primer || null
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ primer: primer || null })
                 });
 
-                if (!response.ok) {
-                    throw new Error('Summoning failed');
-                }
+                if (!response.ok) throw new Error('Summoning failed');
 
                 const data = await response.json();
-
-                // Store prompt
                 currentPrompt = data.prompt;
+                currentSigil = data.sigil;
 
-                // Display sigil
-                document.getElementById('sigil').textContent = data.sigil;
+                document.getElementById('summonedSigil').textContent = data.sigil;
+                document.getElementById('summonedPrompt').textContent = data.prompt;
+                document.getElementById('summonResult').style.display = 'block';
 
-                // Display prompt
-                document.getElementById('promptContainer').textContent = data.prompt;
+                // Auto-fill sigil in save tab
+                document.getElementById('saveSigil').value = data.sigil;
 
-                // Show result section
-                resultSection.classList.add('show');
-
-                // Scroll to results
-                resultSection.scrollIntoView({ behavior: 'smooth' });
-
-                // Reload stats
                 loadStats();
-
+                showMessage('summonMessage', 'Summoning complete! Prompt copied to display.', 'success');
             } catch (error) {
-                alert('❌ Summoning failed. Make sure the API is running:\npython api.py');
+                showMessage('summonMessage', `❌ Summoning failed: ${error.message}`, 'error');
             } finally {
                 btn.disabled = false;
-                btn.textContent = '★ Summon CommIT ★';
+                btn.textContent = '★ SUMMON COMMIT ★';
             }
         }
 
-        function copyPrompt() {
-            navigator.clipboard.writeText(currentPrompt).then(() => {
-                const message = document.getElementById('copiedMessage');
-                message.classList.add('show');
-                setTimeout(() => {
-                    message.classList.remove('show');
-                }, 3000);
-            });
-        }
+        // Restore session
+        async function restoreSession() {
+            const sigil = document.getElementById('restoreSigil').value.trim();
 
-        function newSummoning() {
-            document.getElementById('resultSection').classList.remove('show');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function openAI(platform) {
-            const urls = {
-                grok: 'https://x.ai/grok',
-                claude: 'https://claude.ai/new',
-                chatgpt: 'https://chat.openai.com/',
-                perplexity: 'https://www.perplexity.ai/'
-            };
-
-            window.open(urls[platform], '_blank');
-        }
-
-        async function saveSession() {
-            const sigil = document.getElementById('sessionSigil').value.trim();
-            const sessionDataText = document.getElementById('sessionData').value.trim();
-            const saveMessage = document.getElementById('saveMessage');
-
-            // Validate inputs
             if (!sigil) {
-                saveMessage.innerHTML = '❌ Please enter a session sigil';
-                saveMessage.style.background = 'rgba(255, 0, 0, 0.2)';
-                saveMessage.style.border = '1px solid #ff0033';
-                saveMessage.classList.add('show');
-                setTimeout(() => saveMessage.classList.remove('show'), 3000);
+                showMessage('restoreMessage', '❌ Please enter a session sigil', 'error');
+                return;
+            }
+
+            showMessage('restoreMessage', '⟳ Restoring session...', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/restore`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sigil })
+                });
+
+                if (!response.ok) throw new Error('Session not found');
+
+                const data = await response.json();
+                restoredPrompt = data.prompt;
+
+                document.getElementById('restoredSigil').textContent = sigil;
+                document.getElementById('restoredPrompt').textContent = data.prompt;
+                document.getElementById('restoreResult').style.display = 'block';
+
+                showMessage('restoreMessage', '✓ Session restored successfully!', 'success');
+            } catch (error) {
+                showMessage('restoreMessage', `❌ Restore failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Save session
+        async function saveSession() {
+            const sigil = document.getElementById('saveSigil').value.trim();
+            const sessionDataText = document.getElementById('saveData').value.trim();
+
+            if (!sigil) {
+                showMessage('saveMessage', '❌ Please enter a session sigil', 'error');
                 return;
             }
 
             if (!sessionDataText) {
-                saveMessage.innerHTML = '❌ Please paste session data JSON';
-                saveMessage.style.background = 'rgba(255, 0, 0, 0.2)';
-                saveMessage.style.border = '1px solid #ff0033';
-                saveMessage.classList.add('show');
-                setTimeout(() => saveMessage.classList.remove('show'), 3000);
+                showMessage('saveMessage', '❌ Please paste session data JSON', 'error');
                 return;
             }
 
-            // Parse JSON
             let sessionData;
             try {
                 sessionData = JSON.parse(sessionDataText);
             } catch (e) {
-                saveMessage.innerHTML = '❌ Invalid JSON format. Please check your data.';
-                saveMessage.style.background = 'rgba(255, 0, 0, 0.2)';
-                saveMessage.style.border = '1px solid #ff0033';
-                saveMessage.classList.add('show');
-                setTimeout(() => saveMessage.classList.remove('show'), 5000);
+                showMessage('saveMessage', '❌ Invalid JSON format. Please check your data.', 'error');
                 return;
             }
 
-            // Add sigil to data
             sessionData.sigil = sigil;
-
-            // Show loading state
-            saveMessage.innerHTML = '⟳ Saving session...';
-            saveMessage.style.background = 'rgba(255, 170, 0, 0.2)';
-            saveMessage.style.border = '1px solid #ffaa00';
-            saveMessage.classList.add('show');
+            showMessage('saveMessage', '⟳ Saving session...', 'info');
 
             try {
                 const response = await fetch(`${API_BASE}/session/update`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(sessionData)
                 });
 
@@ -597,29 +757,115 @@
                 }
 
                 const result = await response.json();
-
-                // Success message
-                saveMessage.innerHTML = `✓ Session saved successfully!<br><small>File: ${result.file}</small>`;
-                saveMessage.style.background = 'rgba(0, 255, 136, 0.2)';
-                saveMessage.style.border = '1px solid #00ff88';
-                saveMessage.classList.add('show');
-
-                // Clear form
-                document.getElementById('sessionData').value = '';
-
-                // Reload stats
+                document.getElementById('saveData').value = '';
                 loadStats();
-
-                // Keep message visible longer
-                setTimeout(() => saveMessage.classList.remove('show'), 5000);
-
+                showMessage('saveMessage', `✓ Session saved successfully!<br><small>File: ${result.file}</small>`, 'success');
             } catch (error) {
-                saveMessage.innerHTML = `❌ Failed to save session:<br>${error.message}`;
-                saveMessage.style.background = 'rgba(255, 0, 0, 0.2)';
-                saveMessage.style.border = '1px solid #ff0033';
-                saveMessage.classList.add('show');
-                setTimeout(() => saveMessage.classList.remove('show'), 5000);
+                showMessage('saveMessage', `❌ Failed to save session:<br>${error.message}`, 'error');
             }
+        }
+
+        // Load lineage
+        async function loadLineage() {
+            const container = document.getElementById('lineageContainer');
+            container.innerHTML = '<div class="loading">Loading lineage...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/lineage`);
+                if (!response.ok) throw new Error('Failed to load lineage');
+
+                const data = await response.json();
+
+                if (data.sessions.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">No sessions found yet. Create your first summoning!</p>';
+                    return;
+                }
+
+                let html = `
+                    <table class="lineage-table">
+                        <thead>
+                            <tr>
+                                <th>Sigil</th>
+                                <th>Timestamp</th>
+                                <th>UUID</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                data.sessions.forEach(session => {
+                    const date = new Date(session.timestamp).toLocaleString();
+                    html += `
+                        <tr>
+                            <td class="sigil-cell" onclick="quickRestore('${session.sigil}')" title="Click to restore">
+                                ${session.sigil}
+                            </td>
+                            <td>${date}</td>
+                            <td style="font-size: 0.85em; color: #666;">${session.uuid.substring(0, 16)}...</td>
+                            <td>
+                                <button class="secondary-btn" onclick="quickRestore('${session.sigil}')" style="padding: 8px 15px; font-size: 0.9em;">
+                                    ⟲ Restore
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            } catch (error) {
+                container.innerHTML = `<p style="text-align: center; color: #ff0033; padding: 40px;">❌ Failed to load lineage: ${error.message}</p>`;
+            }
+        }
+
+        // Quick restore from lineage
+        function quickRestore(sigil) {
+            document.getElementById('restoreSigil').value = sigil;
+            switchTab('restore');
+            restoreSession();
+        }
+
+        // Helper functions
+        function copyPrompt() {
+            navigator.clipboard.writeText(currentPrompt).then(() => {
+                showMessage('summonMessage', '✓ Copied to clipboard!', 'success');
+            });
+        }
+
+        function copyRestoredPrompt() {
+            navigator.clipboard.writeText(restoredPrompt).then(() => {
+                showMessage('restoreMessage', '✓ Copied to clipboard!', 'success');
+            });
+        }
+
+        function newSummoning() {
+            document.getElementById('summonResult').style.display = 'none';
+            currentPrompt = '';
+            currentSigil = '';
+        }
+
+        function clearRestore() {
+            document.getElementById('restoreResult').style.display = 'none';
+            document.getElementById('restoreSigil').value = '';
+            restoredPrompt = '';
+        }
+
+        function openAI(platform) {
+            const urls = {
+                grok: 'https://x.ai/grok',
+                claude: 'https://claude.ai/new',
+                chatgpt: 'https://chat.openai.com/',
+                perplexity: 'https://www.perplexity.ai/'
+            };
+            window.open(urls[platform], '_blank');
+        }
+
+        function showMessage(elementId, message, type) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = message;
+            el.className = `message show ${type}`;
+            setTimeout(() => el.classList.remove('show'), 5000);
         }
 
         // Load stats on page load
