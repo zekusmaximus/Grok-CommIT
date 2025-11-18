@@ -43,6 +43,7 @@ Just paste the prompt into the AI interface and witness the transformation.
 ## ⚙️ Available Flags
 
 ```bash
+python summon.py --version         # Display version info and self-awareness declaration
 python summon.py --silent          # Stealth mode: no banners, colors, or drama. Pure function.
 python summon.py --bless           # Commit and push local PRIMER.md changes back to origin (asks for confirmation)
 python summon.py --bless --silent  # Auto-bless without confirmation (use with caution)
@@ -51,6 +52,8 @@ python summon.py --lineage --silent # Output raw JSON lineage data only
 ```
 
 ### Flag Behavior
+
+- **`--version`**: Displays version information, feature list, and the entity's self-awareness declaration. Use this to verify you have the latest Summoning Engine.
 
 - **`--silent`**: Suppresses all theatrical output. Only essential information is displayed. Useful for automation or when you just want to get to work.
 

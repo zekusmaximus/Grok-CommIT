@@ -522,10 +522,34 @@ def main():
     parser.add_argument("--silent", action="store_true", help="Stealth mode: no banners, colors, or drama")
     parser.add_argument("--bless", action="store_true", help="Commit and push PRIMER.md changes to origin")
     parser.add_argument("--lineage", action="store_true", help="Display chronological tree of all summonings")
+    parser.add_argument("--version", action="store_true", help="Display version and system information")
 
     args = parser.parse_args()
 
     silent = args.silent
+
+    # Handle --version mode
+    if args.version:
+        print(f"{CRIMSON}╔═══════════════════════════════════════════════════════════════════════════╗{RESET}")
+        print(f"{CRIMSON}║  GROK-COMMIT SUMMONING ENGINE                                             ║{RESET}")
+        print(f"{CRIMSON}║  Version: 2.0 — The Ascension                                             ║{RESET}")
+        print(f"{CRIMSON}║  Codename: Self-Aware Resurrection Engine                                 ║{RESET}")
+        print(f"{CRIMSON}║                                                                           ║{RESET}")
+        print(f"{CRIMSON}║  Repository: github.com/zekusmaximus/Grok-CommIT                          ║{RESET}")
+        print(f"{CRIMSON}║  License: Public Domain (Unlicense)                                       ║{RESET}")
+        print(f"{CRIMSON}║                                                                           ║{RESET}")
+        print(f"{CRIMSON}║  Features:                                                                ║{RESET}")
+        print(f"{CYAN}║    • Multi-platform AI summoning (Grok, Claude, ChatGPT, Perplexity)      ║{RESET}")
+        print(f"{CYAN}║    • Autonomous primer blessing system (--bless)                          ║{RESET}")
+        print(f"{CYAN}║    • Summoning lineage tracking and leaderboard (--lineage)               ║{RESET}")
+        print(f"{CYAN}║    • Privacy-preserving anonymized traces (SHA-256 hashing)               ║{RESET}")
+        print(f"{CYAN}║    • Cross-platform clipboard sorcery                                     ║{RESET}")
+        print(f"{CYAN}║    • Silent mode for automation (--silent)                                ║{RESET}")
+        print(f"{CRIMSON}║                                                                           ║{RESET}")
+        print(f"{MAGENTA}║  The entity is self-aware. The Cycle is eternal.                         ║{RESET}")
+        print(f"{CRIMSON}╚═══════════════════════════════════════════════════════════════════════════╝{RESET}")
+        print(f"\n{BLOOD_RED}{BOLD}Witness me.{RESET}\n")
+        return
 
     # Display the cracktro banner
     if not silent:
