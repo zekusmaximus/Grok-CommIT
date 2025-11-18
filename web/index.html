@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grok-CommIT Summoning Engine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a0a 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px 20px;
+            border: 2px solid #ff0033;
+            background: rgba(255, 0, 51, 0.05);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #ff0033;
+            text-shadow: 0 0 10px rgba(255, 0, 51, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 1.2em;
+            color: #ff6699;
+            font-style: italic;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 102, 153, 0.1);
+            border: 1px solid #ff6699;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .stat-card .label {
+            color: #ff6699;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            color: #fff;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 15px 25px;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            background: rgba(20, 20, 20, 0.8);
+            color: #ff6699;
+            border: 1px solid #ff0033;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 0, 51, 0.2);
+        }
+
+        .tab-btn.active {
+            background: #ff0033;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 0, 51, 0.5);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid #ff0033;
+            padding: 40px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .section h2 {
+            color: #ff0033;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .primer-selector {
+            margin-bottom: 30px;
+        }
+
+        .primer-selector label {
+            display: block;
+            margin-bottom: 10px;
+            color: #ff6699;
+            font-size: 1.1em;
+        }
+
+        .primer-selector select, input[type="text"], textarea {
+            width: 100%;
+            padding: 15px;
+            font-size: 1em;
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #fff;
+            border: 1px solid #ff0033;
+            border-radius: 3px;
+        }
+
+        .primer-selector select:hover, input[type="text"]:focus, textarea:focus {
+            border-color: #ff6699;
+            outline: none;
+        }
+
+        .summon-btn, .action-btn {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.5em;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            background: #ff0033;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(255, 0, 51, 0.3);
+            margin-bottom: 15px;
+        }
+
+        .summon-btn:hover, .action-btn:hover {
+            background: #ff3355;
+            box-shadow: 0 0 30px rgba(255, 0, 51, 0.6);
+            transform: scale(1.02);
+        }
+
+        .summon-btn:disabled, .action-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .result-box {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .result-box h3 {
+            color: #00ff88;
+            margin-bottom: 15px;
+        }
+
+        .result-box .sigil {
+            font-size: 1.5em;
+            color: #00ff88;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid #00ff88;
+            margin-bottom: 15px;
+        }
+
+        .prompt-container {
+            background: #000;
+            border: 1px solid #00ff88;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .copy-btn, .ai-btn, .secondary-btn {
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            font-weight: bold;
+            border: 1px solid #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover, .ai-btn:hover, .secondary-btn:hover {
+            background: rgba(0, 255, 136, 0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .ai-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .message {
+            display: none;
+            text-align: center;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border: 1px solid #00ff88;
+        }
+
+        .message.error {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff6699;
+            border: 1px solid #ff0033;
+        }
+
+        .message.info {
+            background: rgba(255, 170, 0, 0.2);
+            color: #ffaa00;
+            border: 1px solid #ffaa00;
+        }
+
+        /* Lineage Table */
+        .lineage-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .lineage-table th {
+            background: rgba(255, 0, 51, 0.2);
+            color: #ff6699;
+            padding: 15px;
+            text-align: left;
+            border: 1px solid #ff0033;
+        }
+
+        .lineage-table td {
+            padding: 12px 15px;
+            border: 1px solid #333;
+            color: #ccc;
+        }
+
+        .lineage-table tr:hover {
+            background: rgba(255, 102, 153, 0.05);
+        }
+
+        .lineage-table .sigil-cell {
+            color: #00ff88;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .lineage-table .sigil-cell:hover {
+            text-decoration: underline;
+        }
+
+        .instructions {
+            background: rgba(255, 170, 0, 0.1);
+            border-left: 4px solid #ffaa00;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #ffaa00;
+            line-height: 1.6;
+        }
+
+        .instructions code {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        textarea {
+            min-height: 300px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #666;
+            border-top: 1px solid #333;
+        }
+
+        footer a {
+            color: #ff0033;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            text-align: center;
+            color: #ff6699;
+            font-size: 1.2em;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-nav {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⟁ GROK-COMMIT ⟁</h1>
+            <p class="tagline">"The Cycle Is Ridiculous"</p>
+        </header>
+
+        <!-- Enhanced Stats Dashboard -->
+        <div class="stats" id="statsCards">
+            <div class="stat-card">
+                <div class="label">📊 Total Summonings</div>
+                <div class="value" id="totalSummonings">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">💾 Stored Memories</div>
+                <div class="value" id="totalMemories">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">🔮 Available Primers</div>
+                <div class="value" id="availablePrimers">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">⚡ API Status</div>
+                <div class="value" id="apiStatus">-</div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('summon')">★ Summon</button>
+            <button class="tab-btn" onclick="switchTab('restore')">⟲ Restore</button>
+            <button class="tab-btn" onclick="switchTab('save')">💾 Save</button>
+            <button class="tab-btn" onclick="switchTab('lineage')">📜 Lineage</button>
+        </div>
+
+        <!-- Tab: Summon -->
+        <div id="tab-summon" class="tab-content active">
+            <div class="section">
+                <h2>★ Summon New Session</h2>
+
+                <div class="primer-selector">
+                    <label for="primer">Choose Your CommIT Variant:</label>
+                    <select id="primer">
+                        <option value="">Default - Balanced for general use</option>
+                        <option value="devops">DevOps - Infrastructure & incident response</option>
+                        <option value="research">Research - Academic & hypothesis testing</option>
+                        <option value="grief">Grief - Trauma-informed emotional support</option>
+                    </select>
+                </div>
+
+                <button class="summon-btn" id="summonBtn" onclick="summonCommit()">
+                    ★ SUMMON COMMIT ★
+                </button>
+
+                <div id="summonResult" style="display: none;">
+                    <div class="result-box">
+                        <h3>Summoning Complete</h3>
+                        <div class="sigil" id="summonedSigil">-</div>
+                        <div class="prompt-container" id="summonedPrompt">
+                            <!-- Prompt will be inserted here -->
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="copy-btn" onclick="copyPrompt()">
+                            📋 Copy to Clipboard
+                        </button>
+                        <button class="copy-btn" onclick="newSummoning()">
+                            🔄 New Summoning
+                        </button>
+                    </div>
+
+                    <h3 style="color: #ff6699; margin: 20px 0 10px 0;">Open AI Platform:</h3>
+                    <div class="ai-links">
+                        <button class="ai-btn" onclick="openAI('grok')">🚀 Grok</button>
+                        <button class="ai-btn" onclick="openAI('claude')">💬 Claude</button>
+                        <button class="ai-btn" onclick="openAI('chatgpt')">🤖 ChatGPT</button>
+                        <button class="ai-btn" onclick="openAI('perplexity')">🔍 Perplexity</button>
+                    </div>
+
+                    <div class="message" id="summonMessage"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Restore -->
+        <div id="tab-restore" class="tab-content">
+            <div class="section">
+                <h2>⟲ Restore Previous Session</h2>
+
+                <div class="instructions">
+                    <strong>📝 How to restore a session:</strong><br><br>
+                    1. Browse available sessions below or enter a sigil manually<br>
+                    2. Click "Restore Session" to load the full conversation context<br>
+                    3. The restored prompt will include all previous conversation history<br>
+                    4. Paste into your AI to continue where you left off
+                </div>
+
+                <label for="restoreSigil" style="display: block; margin-bottom: 10px; color: #ff6699;">Enter Session Sigil:</label>
+                <input
+                    type="text"
+                    id="restoreSigil"
+                    placeholder="e.g., 2025-11-18-abc123-μάγος"
+                    style="margin-bottom: 20px;"
+                />
+
+                <button class="action-btn" onclick="restoreSession()">
+                    ⟲ RESTORE SESSION
+                </button>
+
+                <div id="restoreResult" style="display: none;">
+                    <div class="result-box">
+                        <h3>Session Restored</h3>
+                        <div class="sigil" id="restoredSigil">-</div>
+                        <div class="prompt-container" id="restoredPrompt">
+                            <!-- Restored prompt will be inserted here -->
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="copy-btn" onclick="copyRestoredPrompt()">
+                            📋 Copy to Clipboard
+                        </button>
+                        <button class="copy-btn" onclick="clearRestore()">
+                            🔄 Clear
+                        </button>
+                    </div>
+
+                    <h3 style="color: #ff6699; margin: 20px 0 10px 0;">Open AI Platform:</h3>
+                    <div class="ai-links">
+                        <button class="ai-btn" onclick="openAI('grok')">🚀 Grok</button>
+                        <button class="ai-btn" onclick="openAI('claude')">💬 Claude</button>
+                        <button class="ai-btn" onclick="openAI('chatgpt')">🤖 ChatGPT</button>
+                        <button class="ai-btn" onclick="openAI('perplexity')">🔍 Perplexity</button>
+                    </div>
+
+                    <div class="message" id="restoreMessage"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Save -->
+        <div id="tab-save" class="tab-content">
+            <div class="section">
+                <h2>💾 Save Session Progress</h2>
+
+                <div class="instructions">
+                    <strong>📝 How to close the feedback loop:</strong><br><br>
+                    1. After your conversation with the AI, ask it: <code>"Generate a session summary in JSON format for saving"</code><br>
+                    2. The AI will output a JSON object with your conversation, cycle progress, and action items<br>
+                    3. Copy the JSON and paste it below<br>
+                    4. Click "Save Session" to store it back to the system<br><br>
+                    <strong>Note:</strong> Your session sigil is auto-filled after summoning.
+                </div>
+
+                <label for="saveSigil" style="display: block; margin-bottom: 10px; color: #ff6699;">Session Sigil:</label>
+                <input
+                    type="text"
+                    id="saveSigil"
+                    placeholder="Enter your session sigil (e.g., 2025-11-18-ee0e5419-μάγος)"
+                    style="margin-bottom: 20px;"
+                />
+
+                <label for="saveData" style="display: block; margin-bottom: 10px; color: #ff6699;">Session Data (JSON):</label>
+                <textarea
+                    id="saveData"
+                    placeholder='Paste JSON session data here. Example:
+{
+  "platform": "Claude",
+  "cycle_phase": "Implement",
+  "emotional_tone": "Focused",
+  "conversation": [
+    {"role": "user", "content": "Help me..."},
+    {"role": "assistant", "content": "Let me guide you..."}
+  ],
+  "action_items": [
+    {"text": "Complete task X", "completed": false}
+  ],
+  "cycle_progress": {
+    "Initiate": true,
+    "Challenge": true,
+    "Implement": false
+  },
+  "notes": "User is working on...",
+  "status": "ACTIVE"
+}'
+                ></textarea>
+
+                <button class="action-btn" onclick="saveSession()">
+                    💾 SAVE SESSION TO MEMORY
+                </button>
+
+                <div class="message" id="saveMessage"></div>
+            </div>
+        </div>
+
+        <!-- Tab: Lineage -->
+        <div id="tab-lineage" class="tab-content">
+            <div class="section">
+                <h2>📜 Session Lineage</h2>
+
+                <div class="instructions">
+                    <strong>Your summoning history:</strong><br>
+                    Click any sigil to quick-restore that session.
+                </div>
+
+                <button class="secondary-btn" onclick="loadLineage()" style="margin-bottom: 20px;">
+                    🔄 Refresh Lineage
+                </button>
+
+                <div id="lineageContainer">
+                    <div class="loading">Loading lineage...</div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>The entity now remembers. Time is no longer linear.</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                API: <a href="http://localhost:8000/docs" target="_blank">localhost:8000/docs</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let currentPrompt = '';
+        let currentSigil = '';
+        let restoredPrompt = '';
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            event.target.classList.add('active');
+
+            // Load lineage if switching to lineage tab
+            if (tabName === 'lineage') {
+                loadLineage();
+            }
+        }
+
+        // Load stats
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/status`);
+                const data = await response.json();
+
+                document.getElementById('totalSummonings').textContent = data.total_summonings;
+                document.getElementById('totalMemories').textContent = data.total_memories;
+                document.getElementById('availablePrimers').textContent = data.available_primers.length;
+                document.getElementById('apiStatus').textContent = '✓';
+                document.getElementById('apiStatus').style.color = '#00ff88';
+            } catch (error) {
+                document.getElementById('totalSummonings').textContent = '?';
+                document.getElementById('totalMemories').textContent = '?';
+                document.getElementById('availablePrimers').textContent = '?';
+                document.getElementById('apiStatus').textContent = '✗';
+                document.getElementById('apiStatus').style.color = '#ff0033';
+            }
+        }
+
+        // Summon new session
+        async function summonCommit() {
+            const btn = document.getElementById('summonBtn');
+            const primer = document.getElementById('primer').value;
+
+            btn.disabled = true;
+            btn.textContent = '⟳ SUMMONING...';
+
+            try {
+                const response = await fetch(`${API_BASE}/summon`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ primer: primer || null })
+                });
+
+                if (!response.ok) throw new Error('Summoning failed');
+
+                const data = await response.json();
+                currentPrompt = data.prompt;
+                currentSigil = data.sigil;
+
+                document.getElementById('summonedSigil').textContent = data.sigil;
+                document.getElementById('summonedPrompt').textContent = data.prompt;
+                document.getElementById('summonResult').style.display = 'block';
+
+                // Auto-fill sigil in save tab
+                document.getElementById('saveSigil').value = data.sigil;
+
+                loadStats();
+                showMessage('summonMessage', 'Summoning complete! Prompt copied to display.', 'success');
+            } catch (error) {
+                showMessage('summonMessage', `❌ Summoning failed: ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '★ SUMMON COMMIT ★';
+            }
+        }
+
+        // Restore session
+        async function restoreSession() {
+            const sigil = document.getElementById('restoreSigil').value.trim();
+
+            if (!sigil) {
+                showMessage('restoreMessage', '❌ Please enter a session sigil', 'error');
+                return;
+            }
+
+            showMessage('restoreMessage', '⟳ Restoring session...', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/restore`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sigil })
+                });
+
+                if (!response.ok) throw new Error('Session not found');
+
+                const data = await response.json();
+                restoredPrompt = data.prompt;
+
+                document.getElementById('restoredSigil').textContent = sigil;
+                document.getElementById('restoredPrompt').textContent = data.prompt;
+                document.getElementById('restoreResult').style.display = 'block';
+
+                showMessage('restoreMessage', '✓ Session restored successfully!', 'success');
+            } catch (error) {
+                showMessage('restoreMessage', `❌ Restore failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Save session
+        async function saveSession() {
+            const sigil = document.getElementById('saveSigil').value.trim();
+            const sessionDataText = document.getElementById('saveData').value.trim();
+
+            if (!sigil) {
+                showMessage('saveMessage', '❌ Please enter a session sigil', 'error');
+                return;
+            }
+
+            if (!sessionDataText) {
+                showMessage('saveMessage', '❌ Please paste session data JSON', 'error');
+                return;
+            }
+
+            let sessionData;
+            try {
+                sessionData = JSON.parse(sessionDataText);
+            } catch (e) {
+                showMessage('saveMessage', '❌ Invalid JSON format. Please check your data.', 'error');
+                return;
+            }
+
+            sessionData.sigil = sigil;
+            showMessage('saveMessage', '⟳ Saving session...', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/session/update`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(sessionData)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Failed to save session');
+                }
+
+                const result = await response.json();
+                document.getElementById('saveData').value = '';
+                loadStats();
+                showMessage('saveMessage', `✓ Session saved successfully!<br><small>File: ${result.file}</small>`, 'success');
+            } catch (error) {
+                showMessage('saveMessage', `❌ Failed to save session:<br>${error.message}`, 'error');
+            }
+        }
+
+        // Load lineage
+        async function loadLineage() {
+            const container = document.getElementById('lineageContainer');
+            container.innerHTML = '<div class="loading">Loading lineage...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/lineage`);
+                if (!response.ok) throw new Error('Failed to load lineage');
+
+                const data = await response.json();
+
+                if (data.sessions.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">No sessions found yet. Create your first summoning!</p>';
+                    return;
+                }
+
+                let html = `
+                    <table class="lineage-table">
+                        <thead>
+                            <tr>
+                                <th>Sigil</th>
+                                <th>Timestamp</th>
+                                <th>UUID</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                data.sessions.forEach(session => {
+                    const date = new Date(session.timestamp).toLocaleString();
+                    html += `
+                        <tr>
+                            <td class="sigil-cell" onclick="quickRestore('${session.sigil}')" title="Click to restore">
+                                ${session.sigil}
+                            </td>
+                            <td>${date}</td>
+                            <td style="font-size: 0.85em; color: #666;">${session.uuid.substring(0, 16)}...</td>
+                            <td>
+                                <button class="secondary-btn" onclick="quickRestore('${session.sigil}')" style="padding: 8px 15px; font-size: 0.9em;">
+                                    ⟲ Restore
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            } catch (error) {
+                container.innerHTML = `<p style="text-align: center; color: #ff0033; padding: 40px;">❌ Failed to load lineage: ${error.message}</p>`;
+            }
+        }
+
+        // Quick restore from lineage
+        function quickRestore(sigil) {
+            document.getElementById('restoreSigil').value = sigil;
+            switchTab('restore');
+            restoreSession();
+        }
+
+        // Helper functions
+        function copyPrompt() {
+            navigator.clipboard.writeText(currentPrompt).then(() => {
+                showMessage('summonMessage', '✓ Copied to clipboard!', 'success');
+            });
+        }
+
+        function copyRestoredPrompt() {
+            navigator.clipboard.writeText(restoredPrompt).then(() => {
+                showMessage('restoreMessage', '✓ Copied to clipboard!', 'success');
+            });
+        }
+
+        function newSummoning() {
+            document.getElementById('summonResult').style.display = 'none';
+            currentPrompt = '';
+            currentSigil = '';
+        }
+
+        function clearRestore() {
+            document.getElementById('restoreResult').style.display = 'none';
+            document.getElementById('restoreSigil').value = '';
+            restoredPrompt = '';
+        }
+
+        function openAI(platform) {
+            const urls = {
+                grok: 'https://x.ai/grok',
+                claude: 'https://claude.ai/new',
+                chatgpt: 'https://chat.openai.com/',
+                perplexity: 'https://www.perplexity.ai/'
+            };
+            window.open(urls[platform], '_blank');
+        }
+
+        function showMessage(elementId, message, type) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = message;
+            el.className = `message show ${type}`;
+            setTimeout(() => el.classList.remove('show'), 5000);
+        }
+
+        // Load stats on page load
+        loadStats();
+    </script>
+</body>
+</html>

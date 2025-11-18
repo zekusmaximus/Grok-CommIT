@@ -26,19 +26,118 @@
 
 ## 🚀 Quick Start
 
-```bash
-python summon.py
-```
+### Option 1: Web Interface (Recommended)
 
-That's it. The Summoning Engine handles everything:
+The easiest way to use Grok-CommIT is through the web interface:
+
+1. **Clone this repository**
+   ```bash
+   git clone https://github.com/zekusmaximus/Grok-CommIT.git
+   cd Grok-CommIT
+   ```
+
+2. **Install dependencies and start the API**
+   ```bash
+   pip install -r requirements.txt
+   python api.py
+   ```
+
+3. **Open the web interface**
+   - Open `web/index.html` in your browser
+   - Or run `python -m http.server 3000` in the `web/` directory and visit `http://localhost:3000`
+
+4. **Use the interface**
+   - Select a primer variant (or use default)
+   - Click "Summon CommIT"
+   - Copy the prompt with one click
+   - Open your AI platform (Grok, Claude, ChatGPT, Perplexity)
+   - Paste and start using CommIT!
+
+### Option 2: Command Line Script
+
+If you prefer the terminal:
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/zekusmaximus/Grok-CommIT.git
+   cd Grok-CommIT
+   ```
+
+2. **Run the summoning script**
+   ```bash
+   python summon.py
+   ```
+
+3. **Follow the prompts**
+   - Press Enter to accept the default repository path
+   - Choose your AI platform (1-4)
+   - Open the generated `summoning_XXXXX.txt` file
+   - Copy its contents and paste into your AI chat
+
+### What the Script Does
+
+The Summoning Engine handles everything automatically:
 - Clones or updates the repository
 - Locates the latest CommIT Cognitive Primer
 - Forges a complete system prompt
-- Copies it to your clipboard
+- Saves the prompt to a `.txt` file
 - Opens your chosen AI platform (Grok, Claude, ChatGPT, or Perplexity)
 - Records an anonymous trace of the summoning
 
-Just paste the prompt into the AI interface and witness the transformation.
+### Windows Users: Important Notes
+
+**IMPORTANT:** When running the script:
+- **DO NOT** copy/paste terminal output back into the terminal
+- **DO NOT** try to run the ASCII art or error messages as commands
+- **ONLY** type your responses to the prompts (press Enter or type numbers)
+
+If you see repeating errors about "command not found", you've accidentally pasted terminal output back into PowerShell. Close the terminal and start fresh.
+
+The script creates a file named `summoning_XXXXX.txt` - **that file contains the actual prompt you need to paste into your AI chat**, not the terminal output.
+
+---
+
+## 🛠️ Troubleshooting
+
+### "Can't open file 'summon.py'" Error
+
+**Problem:** You're running the script from the wrong directory.
+
+**Solution:**
+```bash
+# Navigate to the repository first
+cd path/to/Grok-CommIT
+
+# Then run the script
+python summon.py
+```
+
+### Repeating "Command Not Found" Errors (Windows)
+
+**Problem:** You copied terminal output and pasted it back into PowerShell.
+
+**Solution:**
+1. Close PowerShell completely
+2. Open a fresh PowerShell window
+3. Navigate to the repository: `cd C:\Users\YourName\Grok-CommIT`
+4. Run: `python summon.py`
+5. **Only type your responses** - don't paste anything
+
+### Network Error During Git Clone
+
+**Problem:** `fatal: unable to access 'https://github.com/...'`
+
+**Solution:**
+- Check your internet connection
+- If behind a proxy, configure git proxy settings
+- You can also download the repository as a ZIP file from GitHub
+
+### Clipboard Copy Failed
+
+**Problem:** The script couldn't copy to clipboard automatically.
+
+**Solution:**
+The script saves the prompt to `summoning_XXXXX.txt` in the repository directory. Open that file manually and copy the contents.
 
 ---
 
@@ -152,6 +251,25 @@ Each primer adapts the CommIT cycle to domain-specific language and practices wh
 
 **The entity speaks HTTP. The Cycle is programmable.**
 
+### Web Interface
+
+**[NEW]** The easiest way to use Grok-CommIT:
+
+1. Start the API: `python api.py`
+2. Open `web/index.html` in your browser
+3. Click "Summon CommIT"
+4. Copy the prompt and paste into any AI
+
+**Features:**
+- 🚀 One-click prompt generation
+- 📋 Automatic clipboard copy
+- 🔗 Direct links to Grok, Claude, ChatGPT, Perplexity
+- 📊 Live statistics dashboard
+- 🎨 Beautiful cyberpunk UI
+- 🌐 No build process - pure HTML/CSS/JS
+
+See `web/README.md` for full documentation.
+
 ### REST API Server
 
 Programmatic access to the Summoning Engine via FastAPI:
@@ -231,9 +349,9 @@ See `vscode-extension/README.md` for full documentation.
 ### Coming Soon
 
 - **Neovim Plugin**: Lua-based CommIT integration
-- **Web UI**: Browser-based session management
 - **CLI Client**: Rich terminal UI for lineage browsing
 - **GitHub Actions**: Automated primer testing and validation
+- **Direct AI Integration**: OAuth-based direct paste to AI platforms
 
 ---
 

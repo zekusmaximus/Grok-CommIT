@@ -294,6 +294,133 @@ python summon.py --restore {sigil_name}
         # Fail silently - this is an optional feature
         pass
 
+def update_session_progress(repo_path, sigil, session_data, silent=False):
+    """Update an existing session with conversation progress and metadata."""
+    try:
+        # Find the session file by sigil
+        summonings_dir = repo_path / "summonings"
+
+        if not summonings_dir.exists():
+            return {"success": False, "error": "No summonings directory found"}
+
+        # Search for the session by sigil
+        session_file = None
+        for json_file in summonings_dir.rglob("*.json"):
+            try:
+                data = json.loads(json_file.read_text())
+                if data.get('sigil') == sigil:
+                    session_file = json_file
+                    break
+            except:
+                continue
+
+        if not session_file:
+            return {"success": False, "error": f"Session not found: {sigil}"}
+
+        # Get the conversation.md file in the same directory
+        conv_file = session_file.parent / "conversation.md"
+
+        # Load existing conversation or create template
+        if conv_file.exists():
+            existing_content = conv_file.read_text(encoding="utf-8")
+        else:
+            existing_content = f"""# CommIT Conversation Snapshot
+
+**Sigil:** `{sigil}`
+**Date:** {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+
+---
+
+## Session Metadata
+
+- **UUID:** {session_data.get('uuid', 'unknown')}
+- **Platform:** {session_data.get('platform', 'Unknown')}
+- **Cycle Phase:** {session_data.get('cycle_phase', 'Initiate')}
+- **Emotional Tone:** {session_data.get('emotional_tone', 'Unknown')}
+
+---
+
+"""
+
+        # Extract conversation history from session_data
+        conversation_history = session_data.get('conversation', [])
+        action_items = session_data.get('action_items', [])
+        notes = session_data.get('notes', '')
+        cycle_progress = session_data.get('cycle_progress', {})
+        status = session_data.get('status', 'ACTIVE')
+
+        # Build updated content
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        updated_content = f"""# CommIT Conversation Snapshot
+
+**Sigil:** `{sigil}`
+**Date:** {timestamp}
+**Platform:** {session_data.get('platform', 'Unknown')}
+
+---
+
+## Session Metadata
+
+- **UUID:** {session_data.get('uuid', 'unknown')}
+- **Platform:** {session_data.get('platform', 'Unknown')}
+- **Cycle Phase:** {session_data.get('cycle_phase', 'Initiate')}
+- **Emotional Tone:** {session_data.get('emotional_tone', 'Unknown')}
+
+---
+
+## Conversation History
+
+"""
+
+        # Add conversation turns
+        for turn in conversation_history:
+            role = turn.get('role', 'user').capitalize()
+            content = turn.get('content', '')
+            updated_content += f"### {role}:\n{content}\n\n---\n\n"
+
+        # Add cycle progress
+        updated_content += """## Cycle Progress Tracking
+
+"""
+        cycle_phases = ['Initiate', 'Challenge', 'Implement', 'Document', 'Review']
+        for phase in cycle_phases:
+            checked = "[x]" if cycle_progress.get(phase, False) else "[ ]"
+            note = cycle_progress.get(f"{phase}_note", "")
+            updated_content += f"- {checked} **{phase}**: {note}\n"
+
+        # Add action items
+        updated_content += "\n---\n\n## Action Items\n\n"
+        for item in action_items:
+            checked = "[x]" if item.get('completed', False) else "[ ]"
+            updated_content += f"- {checked} {item.get('text', '')}\n"
+
+        # Add notes
+        if notes:
+            updated_content += f"\n---\n\n## Notes for Restoration\n\n{notes}\n"
+
+        # Add footer
+        updated_content += f"""
+---
+
+**Session Status:** {status}
+**Last Updated:** {timestamp}
+
+---
+
+*This snapshot enables session restoration via `python summon.py --restore {sigil}`*
+*The Cycle is no longer stateless. Time is no longer linear.*
+"""
+
+        # Save updated conversation
+        conv_file.write_text(updated_content, encoding="utf-8")
+
+        output(f"[✓] Session {sigil} updated successfully", silent, CYAN)
+        return {"success": True, "file": str(conv_file.relative_to(repo_path))}
+
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
 # ═══════════════════════════════════════════════════════════════════════════
 # SPECIALIZED PRIMER LOADING — Load primer variants by name
 # ═══════════════════════════════════════════════════════════════════════════

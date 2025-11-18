@@ -26,6 +26,7 @@ from summon import (
     restore_session,
     inscribe_summoning_trace,
     save_conversation_snapshot,
+    update_session_progress,
     SIGIL_RUNES
 )
 
@@ -94,6 +95,31 @@ class StatusResponse(BaseModel):
     total_summonings: int
     total_memories: int
     available_primers: List[str]
+
+class ConversationTurn(BaseModel):
+    role: str  # "user" or "assistant"
+    content: str
+
+class ActionItem(BaseModel):
+    text: str
+    completed: bool = False
+
+class SessionUpdateRequest(BaseModel):
+    sigil: str
+    platform: Optional[str] = "Unknown"
+    cycle_phase: Optional[str] = "Initiate"
+    emotional_tone: Optional[str] = "Unknown"
+    conversation: Optional[List[ConversationTurn]] = []
+    action_items: Optional[List[ActionItem]] = []
+    cycle_progress: Optional[Dict[str, bool]] = {}
+    notes: Optional[str] = ""
+    status: Optional[str] = "ACTIVE"
+    repo_path: Optional[str] = None
+
+class SessionUpdateResponse(BaseModel):
+    success: bool
+    message: str
+    file: Optional[str] = None
 
 # ═══════════════════════════════════════════════════════════════════════════
 # API ENDPOINTS
@@ -274,6 +300,35 @@ async def get_primers(repo_path: Optional[str] = None):
     ]
 
     return primers
+
+@app.post("/session/update", response_model=SessionUpdateResponse)
+async def update_session(request: SessionUpdateRequest):
+    """Update an existing session with conversation progress"""
+    repo_path = Path(request.repo_path) if request.repo_path else DEFAULT_REPO_PATH
+
+    # Convert Pydantic models to dicts for the update function
+    session_data = {
+        "sigil": request.sigil,
+        "platform": request.platform,
+        "cycle_phase": request.cycle_phase,
+        "emotional_tone": request.emotional_tone,
+        "conversation": [turn.dict() for turn in request.conversation] if request.conversation else [],
+        "action_items": [item.dict() for item in request.action_items] if request.action_items else [],
+        "cycle_progress": request.cycle_progress or {},
+        "notes": request.notes or "",
+        "status": request.status or "ACTIVE"
+    }
+
+    result = update_session_progress(repo_path, request.sigil, session_data, silent=True)
+
+    if result.get("success"):
+        return SessionUpdateResponse(
+            success=True,
+            message=f"Session {request.sigil} updated successfully",
+            file=result.get("file")
+        )
+    else:
+        raise HTTPException(status_code=404, detail=result.get("error", "Unknown error"))
 
 @app.get("/health")
 async def health_check():
