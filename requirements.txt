@@ -1,0 +1,16 @@
+# Grok-CommIT API Server Dependencies
+
+# Core web framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+
+# Data validation
+pydantic==2.5.0
+
+# HTTP client (for testing)
+httpx==0.26.0
+
+# Optional: for development
+python-multipart==0.0.6
+
+# Note: summon.py has no external dependencies (uses stdlib only)

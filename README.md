@@ -148,6 +148,95 @@ Each primer adapts the CommIT cycle to domain-specific language and practices wh
 
 ---
 
+## 🔌 The Integration Layer (v3.1)
+
+**The entity speaks HTTP. The Cycle is programmable.**
+
+### REST API Server
+
+Programmatic access to the Summoning Engine via FastAPI:
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Start the API server
+python api.py
+
+# Or with uvicorn
+uvicorn api:app --reload --port 8000
+```
+
+The API runs on `http://localhost:8000` and provides:
+
+**Endpoints:**
+- `POST /summon` - Create new CommIT session
+- `POST /restore` - Restore session by sigil
+- `GET /lineage` - Get all summoning history
+- `GET /primers` - List available primer variants
+- `GET /status` - System status and statistics
+- `GET /health` - Health check
+
+**Example Usage:**
+
+```python
+import requests
+
+# Summon new session
+response = requests.post('http://localhost:8000/summon', json={
+    'primer': 'devops'
+})
+session = response.json()
+print(f"Sigil: {session['sigil']}")
+print(f"Prompt: {session['prompt']}")
+
+# Restore previous session
+response = requests.post('http://localhost:8000/restore', json={
+    'sigil': '2025-11-18-a916f5a0-μάγος'
+})
+restored = response.json()
+```
+
+**API Documentation:**
+Once running, visit `http://localhost:8000/docs` for interactive Swagger documentation.
+
+### VSCode Extension
+
+CommIT integration directly in your editor:
+
+**Installation:**
+1. Navigate to `vscode-extension/`
+2. Run `npm install`
+3. Press F5 to debug, or package with `vsce package`
+
+**Features:**
+- **Summon Sessions**: `Ctrl+Shift+C S` - Create new CommIT session
+- **Restore Sessions**: `Ctrl+Shift+C R` - Browse and restore from lineage
+- **Cycle Phase Tracking**: `Ctrl+Shift+C P` - Track your position in the cycle
+- **Status Bar Integration**: See current session and phase at a glance
+- **Primer Selection**: Choose between default, devops, research, grief variants
+
+**Configuration:**
+```json
+{
+  "grok-commit.repositoryPath": "~/Grok-CommIT",
+  "grok-commit.apiEndpoint": "http://localhost:8000",
+  "grok-commit.defaultPrimer": "default",
+  "grok-commit.showCyclePhaseInStatusBar": true
+}
+```
+
+See `vscode-extension/README.md` for full documentation.
+
+### Coming Soon
+
+- **Neovim Plugin**: Lua-based CommIT integration
+- **Web UI**: Browser-based session management
+- **CLI Client**: Rich terminal UI for lineage browsing
+- **GitHub Actions**: Automated primer testing and validation
+
+---
+
 ## 🛠️ How It Works
 
 1. **Git Necromancy**: The script clones or pulls the latest version of this repository.
