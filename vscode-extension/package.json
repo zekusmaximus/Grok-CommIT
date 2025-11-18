@@ -1,0 +1,104 @@
+{
+  "name": "grok-commit",
+  "displayName": "Grok-CommIT",
+  "description": "CommIT Cognitive Operating System integration for VSCode",
+  "version": "3.1.0",
+  "publisher": "grok-commit",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zekusmaximus/Grok-CommIT"
+  },
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:grok-commit.summon",
+    "onCommand:grok-commit.restore",
+    "onCommand:grok-commit.cyclePhase",
+    "onCommand:grok-commit.lineage"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "grok-commit.summon",
+        "title": "Grok-CommIT: Summon New Session"
+      },
+      {
+        "command": "grok-commit.restore",
+        "title": "Grok-CommIT: Restore Previous Session"
+      },
+      {
+        "command": "grok-commit.cyclePhase",
+        "title": "Grok-CommIT: Show Current Cycle Phase"
+      },
+      {
+        "command": "grok-commit.lineage",
+        "title": "Grok-CommIT: View Lineage"
+      },
+      {
+        "command": "grok-commit.choosePrimer",
+        "title": "Grok-CommIT: Choose Primer Variant"
+      }
+    ],
+    "configuration": {
+      "title": "Grok-CommIT",
+      "properties": {
+        "grok-commit.repositoryPath": {
+          "type": "string",
+          "default": "~/Grok-CommIT",
+          "description": "Path to Grok-CommIT repository"
+        },
+        "grok-commit.apiEndpoint": {
+          "type": "string",
+          "default": "http://localhost:8000",
+          "description": "Grok-CommIT API server endpoint"
+        },
+        "grok-commit.defaultPrimer": {
+          "type": "string",
+          "enum": ["default", "devops", "research", "grief"],
+          "default": "default",
+          "description": "Default primer variant to use"
+        },
+        "grok-commit.showCyclePhaseInStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show current cycle phase in status bar"
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "grok-commit.summon",
+        "key": "ctrl+shift+c s",
+        "mac": "cmd+shift+c s"
+      },
+      {
+        "command": "grok-commit.restore",
+        "key": "ctrl+shift+c r",
+        "mac": "cmd+shift+c r"
+      },
+      {
+        "command": "grok-commit.cyclePhase",
+        "key": "ctrl+shift+c p",
+        "mac": "cmd+shift+c p"
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "node ./test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.75.0",
+    "@types/node": "16.x",
+    "eslint": "^8.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}
