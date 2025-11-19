@@ -1,20 +1,6 @@
 #!/usr/bin/env python3
 """
 ╔═══════════════════════════════════════════════════════════════════════════╗
-║  API.PY — The Grok-CommIT REST API Server v3.1                            ║
-║  "Programmatic access to the Summoning Engine. The entity speaks HTTP."   ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-"""
-
-from fastapi import FastAPI, HTTPException, BackgroundTasks
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import Optional, List, Dict
-from pathlib import Path
-import json
-import datetime
-
-# Import key functions from summon.py
 import sys
 sys.path.insert(0, str(Path(__file__).parent))
 from summon import (
@@ -120,6 +106,34 @@ class SessionUpdateResponse(BaseModel):
     success: bool
     message: str
     file: Optional[str] = None
+
+class EvolutionChange(BaseModel):
+    file: str
+    operation: str  # "replace"
+    target: str
+    replacement: str
+
+class EvolutionPayload(BaseModel):
+    summary: str
+    changes: List[EvolutionChange]
+
+class EvolveRequest(BaseModel):
+    evolution: EvolutionPayload
+    repo_path: Optional[str] = None
+
+class EvolveResponse(BaseModel):
+    success: bool
+    message: str
+    changes_applied: int
+    branch_name: Optional[str] = None
+
+def validate_python_syntax(content: str) -> bool:
+    """Check if the provided content is valid Python code."""
+    try:
+        ast.parse(content)
+        return True
+    except SyntaxError:
+        return False
 
 # ═══════════════════════════════════════════════════════════════════════════
 # API ENDPOINTS
@@ -329,6 +343,101 @@ async def update_session(request: SessionUpdateRequest):
         )
     else:
         raise HTTPException(status_code=404, detail=result.get("error", "Unknown error"))
+
+@app.post("/evolve", response_model=EvolveResponse)
+async def evolve(request: EvolveRequest):
+    """Apply self-evolution changes to the codebase in a sandboxed git branch."""
+    repo_path = Path(request.repo_path) if request.repo_path else DEFAULT_REPO_PATH
+    
+    # 1. Check for Git
+    if not check_git_availability(silent=True):
+        return EvolveResponse(
+            success=False,
+            message="Git is required for evolution but was not found.",
+            changes_applied=0
+        )
+
+    # 2. Create Sandboxed Branch
+    mutation_id = str(uuid.uuid4())[:8]
+    date_str = datetime.datetime.now().strftime("%Y-%m-%d")
+    branch_name = f"mutation/{date_str}-{mutation_id}"
+    
+    try:
+        # Create and checkout new branch
+        subprocess.run(["git", "-C", str(repo_path), "checkout", "-b", branch_name], check=True, capture_output=True)
+    except subprocess.CalledProcessError as e:
+        return EvolveResponse(
+            success=False,
+            message=f"Failed to create mutation branch: {e}",
+            changes_applied=0
+        )
+
+    changes_applied = 0
+    errors = []
+
+    for change in request.evolution.changes:
+        try:
+            # Security check: prevent path traversal
+            if ".." in change.file or change.file.startswith("/") or "\\" in change.file:
+                errors.append(f"Invalid file path: {change.file}")
+                continue
+
+            target_file = repo_path / change.file
+            
+            if not target_file.exists():
+                errors.append(f"File not found: {change.file}")
+                continue
+
+            content = target_file.read_text(encoding="utf-8")
+            new_content = content
+            
+            if change.operation == "replace":
+                if change.target not in content:
+                    errors.append(f"Target content not found in {change.file}")
+                    continue
+                new_content = content.replace(change.target, change.replacement)
+            
+            # Syntax Validation (The Litmus Test)
+            if change.file.endswith(".py"):
+                if not validate_python_syntax(new_content):
+                    errors.append(f"Syntax Error in {change.file}: The mutation would break the spell.")
+                    continue
+
+            # Apply Change
+            target_file.write_text(new_content, encoding="utf-8")
+            
+            # Stage File
+            subprocess.run(["git", "-C", str(repo_path), "add", change.file], check=True, capture_output=True)
+            changes_applied += 1
+                
+        except Exception as e:
+            errors.append(f"Error processing {change.file}: {str(e)}")
+
+    if changes_applied > 0:
+        # Commit the mutation
+        commit_msg = f"Mutation: {request.evolution.summary}"
+        subprocess.run(["git", "-C", str(repo_path), "commit", "-m", commit_msg], capture_output=True)
+        
+        message = f"Evolution complete. {changes_applied} mutations applied to branch '{branch_name}'."
+        if errors:
+            message += f" Errors: {'; '.join(errors)}"
+            
+        return EvolveResponse(
+            success=True,
+            message=message,
+            changes_applied=changes_applied,
+            branch_name=branch_name
+        )
+    else:
+        # Cleanup: Switch back to main and delete empty branch
+        subprocess.run(["git", "-C", str(repo_path), "checkout", "-"], capture_output=True)
+        subprocess.run(["git", "-C", str(repo_path), "branch", "-D", branch_name], capture_output=True)
+        
+        return EvolveResponse(
+            success=False,
+            message=f"No changes applied. Errors: {'; '.join(errors)}",
+            changes_applied=0
+        )
 
 @app.get("/health")
 async def health_check():

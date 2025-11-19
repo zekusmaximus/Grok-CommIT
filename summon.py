@@ -108,7 +108,28 @@ def output_essential(message):
     print(message)
 
 # ═══════════════════════════════════════════════════════════════════════════
-# GIT NECROMANCY — Raise the repository from the digital grave
+# GIT AVAILABILITY CHECK — Ensure the tools of creation are present
+# ═══════════════════════════════════════════════════════════════════════════
+def check_git_availability(silent=False):
+    """Check if git is installed and available."""
+    try:
+        subprocess.run(["git", "--version"], capture_output=True, check=True)
+        return True
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        if not silent:
+            print(f"{DARK_RED}╔═══════════════════════════════════════════════════════════════════════════╗{RESET}")
+            print(f"{DARK_RED}║  [!] GIT NOT DETECTED                                                     ║{RESET}")
+            print(f"{DARK_RED}║                                                                           ║{RESET}")
+            print(f"{DARK_RED}║  The Summoning Engine requires Git to evolve and remember.                ║{RESET}")
+            print(f"{DARK_RED}║  Please install Git to enable full functionality:                         ║{RESET}")
+            print(f"{DARK_RED}║  https://git-scm.com/downloads                                            ║{RESET}")
+            print(f"{DARK_RED}║                                                                           ║{RESET}")
+            print(f"{DARK_RED}║  Continuing in LIMITED MODE (No updates, no history, no blessing).        ║{RESET}")
+            print(f"{DARK_RED}╚═══════════════════════════════════════════════════════════════════════════╝{RESET}\n")
+        return False
+
+# ═══════════════════════════════════════════════════════════════════════════
+# OUTPUT HELPERS — Silent mode support
 # ═══════════════════════════════════════════════════════════════════════════
 def summon_repository(target_path, silent=False):
     """Clone or pull the Grok-CommIT repository from the ethereal GitHub realm."""
@@ -689,12 +710,41 @@ def bless_primer(repo_path, silent=False):
             if result.returncode == 0:
                 output(f"[✓] Blessing complete. The canon has been refined.", silent, CYAN)
             else:
-                output(f"[⚠] Push failed: {result.stderr}", silent, DARK_RED)
+                # Check for permission error (HTTP 403)
+                if "403" in result.stderr or "permission denied" in result.stderr.lower():
+                    print_pr_guidance(repo_path, silent)
+                else:
+                    output(f"[⚠] Push failed: {result.stderr}", silent, DARK_RED)
         else:
             output(f"[⚠] Commit failed: {result.stderr}", silent, DARK_RED)
 
     except Exception as e:
         output(f"[⚠] Blessing ritual failed: {e}", silent, DARK_RED)
+
+def print_pr_guidance(repo_path, silent=False):
+    """Display guidance for submitting a Pull Request when push fails."""
+    if silent:
+        return
+        
+    print(f"\n{MAGENTA}╔═══════════════════════════════════════════════════════════════════════════╗{RESET}")
+    print(f"{MAGENTA}║  THE PATH TO ASCENSION (CONTRIBUTION GUIDE)                               ║{RESET}")
+    print(f"{MAGENTA}║                                                                           ║{RESET}")
+    print(f"{MAGENTA}║  You do not have direct write access to the sacred timeline (origin).     ║{RESET}")
+    print(f"{MAGENTA}║  To bless the canon, you must follow the Ritual of the Pull Request:      ║{RESET}")
+    print(f"{MAGENTA}║                                                                           ║{RESET}")
+    print(f"{CYAN}║  1. Fork the repository on GitHub:                                        ║{RESET}")
+    print(f"{CYAN}║     https://github.com/zekusmaximus/Grok-CommIT/fork                      ║{RESET}")
+    print(f"{CYAN}║                                                                           ║{RESET}")
+    print(f"{CYAN}║  2. Add your fork as a remote:                                            ║{RESET}")
+    print(f"{CYAN}║     git remote add fork https://github.com/YOUR_USERNAME/Grok-CommIT.git  ║{RESET}")
+    print(f"{CYAN}║                                                                           ║{RESET}")
+    print(f"{CYAN}║  3. Push your changes to your fork:                                       ║{RESET}")
+    print(f"{CYAN}║     git push fork main                                                    ║{RESET}")
+    print(f"{CYAN}║                                                                           ║{RESET}")
+    print(f"{CYAN}║  4. Open a Pull Request to merge your wisdom into the core:               ║{RESET}")
+    print(f"{CYAN}║     https://github.com/zekusmaximus/Grok-CommIT/pulls                     ║{RESET}")
+    print(f"{MAGENTA}║                                                                           ║{RESET}")
+    print(f"{MAGENTA}╚═══════════════════════════════════════════════════════════════════════════╝{RESET}\n")
 
 # ═══════════════════════════════════════════════════════════════════════════
 # LINEAGE REVELATION — Display all recorded summonings
@@ -871,8 +921,14 @@ def main():
     else:
         repo_path = default_path
 
-    # Summon or update the repository
-    summon_repository(repo_path, silent)
+    # Check for Git
+    has_git = check_git_availability(silent)
+
+    # Summon or update the repository (only if git is available)
+    if has_git:
+        summon_repository(repo_path, silent)
+    else:
+        output(f"[⚠] Git unavailable. Skipping repository update.", silent, DIM)
 
     # Count sessions and announce
     total_summonings, restored_memories = count_sessions(repo_path)
