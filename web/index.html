@@ -75,6 +75,64 @@
 
         /* Tab Navigation */
         .tab-nav {
+        flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⟁ Grok-CommIT ⟁</h1>
+            <p class="tagline">The Interface Between Thought and Code</p>
+            <button class="secondary-btn" onclick="showHelp()" style="position: absolute; top: 20px; right: 20px;">[?]</button>
+        </header>
+
+        <!-- Mission Briefing Modal -->
+        <div id="onboardingModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8);">
+            <div class="modal-content" style="background-color: #1a0a0a; margin: 10% auto; padding: 20px; border: 2px solid #ff0033; width: 80%; max-width: 800px; color: #fff; font-family: 'Courier New', monospace;">
+                <span class="close" onclick="closeModal()" style="color: #ff6699; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+                <h2 style="color: #ff0033; border-bottom: 1px solid #ff0033; padding-bottom: 10px;">⟁ MISSION BRIEFING ⟁</h2>
+                <div style="margin-top: 20px; line-height: 1.6;">
+                    <p><strong>Welcome, Summoner.</strong></p>
+                    <p>You have accessed the <strong>Grok-CommIT</strong> interface—a bridge between human intent and machine execution.</p>
+                    <p>Your mission is to:</p>
+                    <ul style="list-style-type: none; padding-left: 20px;">
+                        <li style="margin-bottom: 10px;">★ <strong>SUMMON</strong> specialized AI agents ("CommITs") to solve complex coding tasks.</li>
+                        <li style="margin-bottom: 10px;">⟲ <strong>RESTORE</strong> previous sessions to continue your work across time.</li>
+                        <li style="margin-bottom: 10px;">💾 <strong>SAVE</strong> your progress to close the feedback loop.</li>
+                        <li style="margin-bottom: 10px;">🧬 <strong>EVOLVE</strong> this very tool by guiding the AI to rewrite its own code.</li>
+                    </ul>
+                    <p>The system is designed to be <strong>self-evolving</strong>. Use the "Evolve" tab to apply AI-generated mutations to the codebase.</p>
+                    <p style="color: #ff6699; margin-top: 20px; text-align: center;"><em>"The Cycle is programmable. You are the architect."</em></p>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="action-btn" onclick="closeModal()" style="width: auto; padding: 10px 30px;">ACKNOWLEDGE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="label">Total Summonings</div>
+                <div class="value" id="totalSummonings">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Total Memories</div>
+                <div class="value" id="totalMemories">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Available Primers</div>
+                <div class="value" id="availablePrimers">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">System Status</div>
+                <div class="value" id="apiStatus">-</div>
+            </div>
+        </div>
+
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('summon')">★ Summon</button>
             display: flex;
             gap: 10px;
             margin-bottom: 30px;
@@ -380,6 +438,64 @@
             }
 
             .tab-nav {
+        flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⟁ Grok-CommIT ⟁</h1>
+            <p class="tagline">The Interface Between Thought and Code</p>
+            <button class="secondary-btn" onclick="showHelp()" style="position: absolute; top: 20px; right: 20px;">[?]</button>
+        </header>
+
+        <!-- Mission Briefing Modal -->
+        <div id="onboardingModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8);">
+            <div class="modal-content" style="background-color: #1a0a0a; margin: 10% auto; padding: 20px; border: 2px solid #ff0033; width: 80%; max-width: 800px; color: #fff; font-family: 'Courier New', monospace;">
+                <span class="close" onclick="closeModal()" style="color: #ff6699; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+                <h2 style="color: #ff0033; border-bottom: 1px solid #ff0033; padding-bottom: 10px;">⟁ MISSION BRIEFING ⟁</h2>
+                <div style="margin-top: 20px; line-height: 1.6;">
+                    <p><strong>Welcome, Summoner.</strong></p>
+                    <p>You have accessed the <strong>Grok-CommIT</strong> interface—a bridge between human intent and machine execution.</p>
+                    <p>Your mission is to:</p>
+                    <ul style="list-style-type: none; padding-left: 20px;">
+                        <li style="margin-bottom: 10px;">★ <strong>SUMMON</strong> specialized AI agents ("CommITs") to solve complex coding tasks.</li>
+                        <li style="margin-bottom: 10px;">⟲ <strong>RESTORE</strong> previous sessions to continue your work across time.</li>
+                        <li style="margin-bottom: 10px;">💾 <strong>SAVE</strong> your progress to close the feedback loop.</li>
+                        <li style="margin-bottom: 10px;">🧬 <strong>EVOLVE</strong> this very tool by guiding the AI to rewrite its own code.</li>
+                    </ul>
+                    <p>The system is designed to be <strong>self-evolving</strong>. Use the "Evolve" tab to apply AI-generated mutations to the codebase.</p>
+                    <p style="color: #ff6699; margin-top: 20px; text-align: center;"><em>"The Cycle is programmable. You are the architect."</em></p>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="action-btn" onclick="closeModal()" style="width: auto; padding: 10px 30px;">ACKNOWLEDGE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="label">Total Summonings</div>
+                <div class="value" id="totalSummonings">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Total Memories</div>
+                <div class="value" id="totalMemories">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Available Primers</div>
+                <div class="value" id="availablePrimers">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">System Status</div>
+                <div class="value" id="apiStatus">-</div>
+            </div>
+        </div>
+
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('summon')">★ Summon</button>
                 <button class="tab-btn" onclick="switchTab('restore')">⟲ Restore</button><button class="tab-btn" onclick="switchTab('save')">💾 Save</button><button class="tab-btn" onclick="switchTab('evolve')">🧬 Evolve</button><button class="tab-btn" onclick="switchTab('lineage')">📜 Lineage</button></div>< !-- Tab: Summon --> <div id="tab-summon" class="tab-content active" > <div class="section" > <h2>★ Summon New Session</h2> <div class="primer-selector" > <label for="primer" >Choose Your CommIT Variant:</label> <select id="primer" > <option value="" >Default - Balanced for general use</option> <option value="devops" >DevOps - Infrastructure & incident response</option> <option value="research" >Research - Academic & hypothesis testing</option> <option value="grief" >Grief - Trauma-informed emotional support</option> </select> </div> <button class="summon-btn" id="summonBtn" onclick="summonCommit()" > ★ SUMMON COMMIT ★ </button> <div id="summonResult" style="display: none;" > <div class="result-box" > <h3>Summoning Complete</h3> <div class="sigil" id="summonedSigil" >-</div> <div class="prompt-container" id="summonedPrompt" > < !-- Prompt will be inserted here --> </div> </div> <div class="action-buttons" > <button class="copy-btn" onclick="copyPrompt()" > 📋 Copy to Clipboard </button> <button class="copy-btn" onclick="newSummoning()" > 🔄 New Summoning </button> </div> <h3 style="color: #ff6699; margin: 20px 0 10px 0;" >Open AI Platform:</h3> <div class="ai-links" > <button class="ai-btn" onclick="openAI('grok')" >🚀 Grok</button> <button class="ai-btn" onclick="openAI('claude')" >💬 Claude</button> <button class="ai-btn" onclick="openAI('chatgpt')" >🤖 ChatGPT</button> <button class="ai-btn" onclick="openAI('perplexity')" >🔍 Perplexity</button> </div> <div class="message" id="summonMessage" ></div> </div> </div> </div> < !-- Tab: Restore --> <div id="tab-restore" class="tab-content" > <div class="section" > <h2>⟲ Restore Previous Session</h2> <div class="instructions" > <strong>📝 How to restore a session:</strong><br><br> 1. Browse available sessions below or enter a sigil manually<br> 2. Click "Restore Session" to load the full conversation context<br> 3. The restored prompt will include all previous conversation history<br> 4. Paste into your AI to continue where you left off </div> <label for="restoreSigil" style="display: block; margin-bottom: 10px; color: #ff6699;" >Enter Session Sigil:</label> <input type="text"
                     id="restoreSigil"
                     placeholder="e.g., 2025-11-18-abc123-μάγος"

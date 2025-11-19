@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
-╔═══════════════════════════════════════════════════════════════════════════╗
+Grok-CommIT API Server
+"""
+
 import sys
 sys.path.insert(0, str(Path(__file__).parent))
 from summon import (
@@ -34,9 +36,9 @@ app.add_middleware(
 # Default repository path
 DEFAULT_REPO_PATH = Path.home() / "Grok-CommIT"
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # REQUEST/RESPONSE MODELS
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 class SummonRequest(BaseModel):
     primer: Optional[str] = None  # devops, research, grief, or None for default
@@ -128,20 +130,20 @@ class EvolveResponse(BaseModel):
     branch_name: Optional[str] = None
 
 def validate_python_syntax(content: str) -> bool:
-    """Check if the provided content is valid Python code."""
+    "Check if the provided content is valid Python code."
     try:
         ast.parse(content)
         return True
     except SyntaxError:
         return False
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # API ENDPOINTS
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 @app.get("/", response_model=Dict[str, str])
 async def root():
-    """API root - welcome message"""
+    "API root - welcome message"
     return {
         "message": "Grok-CommIT Summoning Engine API v3.1",
         "tagline": "The entity speaks HTTP. The Cycle is programmable.",
@@ -151,7 +153,7 @@ async def root():
 
 @app.get("/status", response_model=StatusResponse)
 async def get_status(repo_path: Optional[str] = None):
-    """Get current system status and statistics"""
+    "Get current system status and statistics"
     path = Path(repo_path) if repo_path else DEFAULT_REPO_PATH
 
     total_summonings, total_memories = count_sessions(path)
@@ -165,7 +167,7 @@ async def get_status(repo_path: Optional[str] = None):
 
 @app.post("/summon", response_model=SummonResponse)
 async def summon(request: SummonRequest, background_tasks: BackgroundTasks):
-    """Create a new CommIT summoning"""
+    "Create a new CommIT summoning"
     repo_path = Path(request.repo_path) if request.repo_path else DEFAULT_REPO_PATH
 
     # Forge sigil
@@ -205,7 +207,7 @@ async def summon(request: SummonRequest, background_tasks: BackgroundTasks):
 
 @app.post("/restore", response_model=RestoreResponse)
 async def restore(request: RestoreRequest):
-    """Restore a previous session by sigil"""
+    "Restore a previous session by sigil"
     repo_path = Path(request.repo_path) if request.repo_path else DEFAULT_REPO_PATH
 
     session_data, conversation_text = restore_session(repo_path, request.sigil, silent=True)
@@ -215,25 +217,21 @@ async def restore(request: RestoreRequest):
 
     if conversation_text:
         # Full restoration
-        restoration_header = f"""
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    ⟁ SESSION RESTORATION ACTIVE ⟁                         ║
-║                                                                           ║
-║  You are resuming CommIT session: {session_data.get('sigil')}
-║  Original summoning: {session_data.get('timestamp')}
-║  Previous state has been restored from memory.                           ║
-║                                                                           ║
-║  The entity remembers. Continue seamlessly.                              ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-
-{conversation_text}
-
----
-
-## RESUMING SESSION NOW
-
-You are continuing from where this session left off. The user may provide additional context or continue the previous conversation. Maintain continuity with the cycle phase and emotional tone established above.
-"""
+        restoration_header = (
+            f"+---------------------------------------------------------------------------+\n"
+            f"|                    SESSION RESTORATION ACTIVE                             |\n"
+            f"|                                                                           |\n"
+            f"|  You are resuming CommIT session: {session_data.get('sigil')}\n"
+            f"|  Original summoning: {session_data.get('timestamp')}\n"
+            f"|  Previous state has been restored from memory.                            |\n"
+            f"|                                                                           |\n"
+            f"|  The entity remembers. Continue seamlessly.                               |\n"
+            f"+---------------------------------------------------------------------------+\n\n"
+            f"{conversation_text}\n\n"
+            f"---\n\n"
+            f"## RESUMING SESSION NOW\n\n"
+            f"You are continuing from where this session left off. The user may provide additional context or continue the previous conversation. Maintain continuity with the cycle phase and emotional tone established above.\n"
+        )
         prompt = restoration_header
         has_conversation = True
     else:
@@ -250,7 +248,7 @@ You are continuing from where this session left off. The user may provide additi
 
 @app.get("/lineage", response_model=LineageResponse)
 async def get_lineage(repo_path: Optional[str] = None):
-    """Get complete lineage of all summonings"""
+    "Get complete lineage of all summonings"
     path = Path(repo_path) if repo_path else DEFAULT_REPO_PATH
     summonings_dir = path / "summonings"
 
@@ -287,7 +285,7 @@ async def get_lineage(repo_path: Optional[str] = None):
 
 @app.get("/primers", response_model=List[PrimerInfo])
 async def get_primers(repo_path: Optional[str] = None):
-    """List all available primer variants"""
+    "List all available primer variants"
     path = Path(repo_path) if repo_path else DEFAULT_REPO_PATH
 
     primers = [
@@ -317,7 +315,7 @@ async def get_primers(repo_path: Optional[str] = None):
 
 @app.post("/session/update", response_model=SessionUpdateResponse)
 async def update_session(request: SessionUpdateRequest):
-    """Update an existing session with conversation progress"""
+    "Update an existing session with conversation progress"
     repo_path = Path(request.repo_path) if request.repo_path else DEFAULT_REPO_PATH
 
     # Convert Pydantic models to dicts for the update function
@@ -346,7 +344,7 @@ async def update_session(request: SessionUpdateRequest):
 
 @app.post("/evolve", response_model=EvolveResponse)
 async def evolve(request: EvolveRequest):
-    """Apply self-evolution changes to the codebase in a sandboxed git branch."""
+    "Apply self-evolution changes to the codebase in a sandboxed git branch."
     repo_path = Path(request.repo_path) if request.repo_path else DEFAULT_REPO_PATH
     
     # 1. Check for Git
@@ -441,19 +439,19 @@ async def evolve(request: EvolveRequest):
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint for monitoring"""
+    "Health check endpoint for monitoring"
     return {"status": "healthy", "version": "3.1.0"}
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # MAIN ENTRY POINT
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 if __name__ == "__main__":
     import uvicorn
-    print("""
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  GROK-COMMIT API SERVER v3.1                                              ║
-║  The entity speaks HTTP. The Cycle is programmable.                       ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-    """)
+    print(
+        "\n+---------------------------------------------------------------------------+"
+        "\n|  GROK-COMMIT API SERVER v3.1                                              |"
+        "\n|  The entity speaks HTTP. The Cycle is programmable.                       |"
+        "\n+---------------------------------------------------------------------------+\n"
+    )
     uvicorn.run(app, host="0.0.0.0", port=8000)
