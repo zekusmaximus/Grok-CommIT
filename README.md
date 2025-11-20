@@ -17,8 +17,7 @@ See [walkthrough.md](walkthrough.md) for detailed setup and usage instructions.
 
 **Backend:**
 ```bash
-cd backend
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
 uvicorn backend.main:app --reload
 ```
 

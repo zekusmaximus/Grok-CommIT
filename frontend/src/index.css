@@ -1,11 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   --color-void: #050505;
-  --color-sigil: #ff003c; /* Crimson */
-  --color-neon: #00f3ff; /* Cyan */
+  --color-sigil: #ff003c;
+  /* Crimson */
+  --color-neon: #00f3ff;
+  /* Cyan */
   --color-text: #e0e0e0;
   --color-dim: #4a4a4a;
 }
@@ -13,8 +13,10 @@
 body {
   background-color: var(--color-void);
   color: var(--color-text);
-  font-family: 'Inter', sans-serif; /* Assuming Inter or similar */
-  overflow: hidden; /* App-like feel */
+  font-family: 'Inter', sans-serif;
+  /* Assuming Inter or similar */
+  overflow: hidden;
+  /* App-like feel */
 }
 
 /* Scrollbar */
@@ -22,24 +24,29 @@ body {
   width: 8px;
   height: 8px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #1a1a1a; 
+  background: #1a1a1a;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #333; 
+  background: #333;
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+  background: #555;
 }
 
 /* Cyber-Mystic Utilities */
 .neon-text {
   text-shadow: 0 0 5px var(--color-neon), 0 0 10px var(--color-neon);
 }
+
 .sigil-text {
   text-shadow: 0 0 5px var(--color-sigil), 0 0 10px var(--color-sigil);
 }
+
 .glass-panel {
   background: rgba(20, 20, 20, 0.7);
   backdrop-filter: blur(10px);

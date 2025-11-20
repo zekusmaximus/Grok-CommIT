@@ -28,19 +28,14 @@ The system is now divided into two main components:
 ## 🚀 How to Run
 
 ### Backend
-1. Open a terminal in the `backend` directory.
-2. Create a virtual environment (optional but recommended).
-3. Install dependencies:
+1. Open a terminal in the project root.
+2. Install dependencies:
    ```bash
-   pip install -r requirements.txt
+   pip install -r backend/requirements.txt
    ```
-4. Create a `.env` file from `.env.example`.
-5. Configure your `LLM_PROVIDER` (openai, gemini, groq, or ollama) and add the corresponding API key.
-   - **OpenAI**: Standard GPT-4.
-   - **Gemini**: Low cost, high context (requires `GEMINI_API_KEY`).
-   - **Groq**: Ultra-fast inference (requires `GROQ_API_KEY`).
-   - **Ollama**: Free local inference (requires running Ollama locally).
-6. Start the server:
+3. Create a `backend/.env` file from `backend/.env.example`.
+4. Configure your `LLM_PROVIDER` in `.env`.
+5. Start the server:
    ```bash
    uvicorn backend.main:app --reload
    ```
